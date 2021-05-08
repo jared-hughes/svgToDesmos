@@ -58,18 +58,23 @@ function mergeState(
   state.firstPoint = state.firstPoint ?? nextState.currentPoint;
 }
 
-function getParametricLatex(state: State) {
+function getParametricLatex(state: State, normalize: boolean) {
   const numParts = state.parts.length;
-  return `\\left\\{${state.parts
+  let latex = `\\left\\{${state.parts
     .map(
       (part, i) =>
-        `${
-          i < numParts - 1
-            ? `${part.startT}\\le ${numParts}t<${part.endT}:`
-            : ""
-        }${part.value.replace(/T/g, `\\left(${numParts}t\\right)`)}`
+        `${i < numParts - 1 ? `${part.startT}\\le T<${part.endT}:` : ""}${
+          part.value
+        }`
     )
     .join(",")}\\right\\}`;
+  if (normalize) {
+    latex = latex.replace(/T/g, `\\left(${numParts}t\\right)`);
+    return `p\\left(t\\right)=${latex}`;
+  } else {
+    latex = latex.replace(/T/g, "u");
+    return `p_{0}\\left(u\\right)=${latex}\np\\left(t\\right)=p_{0}\\left(${numParts}t\\right)`;
+  }
 }
 
 function pathToDesmos(path: string) {
@@ -99,7 +104,7 @@ function pathToDesmos(path: string) {
     const nextState = func(state, args);
     mergeState(state, nextState);
   }
-  return getParametricLatex(state);
+  return getParametricLatex(state, false);
 }
 
 console.log(
