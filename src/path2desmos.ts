@@ -55,7 +55,7 @@ function mergeState(
   // `last control points` get reset after each command
   state.lastCubicControlPoint = nextState?.lastCubicControlPoint;
   state.lastQuadraticControlPoint = nextState.lastQuadraticControlPoint;
-  state.firstPoint = nextState.firstPoint ?? state.firstPoint;
+  state.firstPoint = state.firstPoint ?? nextState.currentPoint;
 }
 
 function getParametricLatex(state: State) {
@@ -103,7 +103,7 @@ function pathToDesmos(path: string) {
 }
 
 console.log(
-  pathToDesmos(`M 110,90
-           c 20,0 15,-80 40,-80
-           s 20,80 40,80`) + ";"
+  pathToDesmos(
+    `M856 0q-71 6 -136 6h-404q-64 0 -135 -6v64q12 0 37.5 -1t38.5 -1q153 0 175 43q9 18 9 53v1087q-109 -54 -272 -54v64q250 0 379 133h10q29 0 35 -14q3 -6 3 -39v-1181q0 -33 8 -50q15 -33 117 -40q14 -1 135 0v-64z`
+  ) + ";"
 );

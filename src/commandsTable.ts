@@ -111,7 +111,6 @@ type StateOptional = {
   currentPoint: Point;
   lastCubicControlPoint?: Point;
   lastQuadraticControlPoint?: Point;
-  firstPoint?: Point;
 };
 
 interface CommandsTableEntry {
@@ -167,7 +166,7 @@ const commandsTable: { [key: string]: CommandsTableEntry } = {
   Z: {
     args: [],
     // assumes firstPoint is defined (who would start a path with Z?)
-    func: (state) => lineTo(state, state.firstPoint as Point),
+    func: (state) => lineTo(state, state.firstPoint ?? new Point(0, 0)),
   },
 };
 
