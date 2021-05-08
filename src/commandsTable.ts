@@ -17,6 +17,12 @@ function moveTo({ parts }: State, p: Point) {
 }
 
 function lineTo({ parts, lastT, currentPoint }: State, p: Point) {
+  if (p.eq(currentPoint)) {
+    return {
+      parts,
+      currentPoint,
+    };
+  }
   const T = t(lastT);
   return {
     parts: [
@@ -37,6 +43,14 @@ function cubicBezierTo(
   p2: Point,
   p: Point
 ) {
+  if (p1.eq(currentPoint) && p2.eq(currentPoint) && p.eq(currentPoint)) {
+    return {
+      parts,
+      // still updates according to the SVG spec
+      lastCubicControlPoint: p2,
+      currentPoint,
+    };
+  }
   const T = t(lastT);
   return {
     parts: [
@@ -76,6 +90,14 @@ function quadraticBezierTo(
   p1: Point,
   p: Point
 ) {
+  if (p1.eq(currentPoint) && p.eq(currentPoint)) {
+    return {
+      parts,
+      // still updates according to the SVG spec
+      lastQuadraticControlPoint: p1,
+      currentPoint,
+    };
+  }
   const T = t(lastT);
   return {
     parts: [

@@ -31,4 +31,8 @@ export default class Point {
   mul(s: number) {
     return new Point(s * this.x, s * this.y);
   }
+
+  eq(p: Point) {
+    return this.x === p.x && this.y === p.y;
+  }
 }
