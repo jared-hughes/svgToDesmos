@@ -88,7 +88,7 @@ function quadraticBezierTo(
           .mul(2)
           .toLatex()}\\left(${T}-${T}^2\\right)+${p
           .sub(currentPoint)
-          .toLatex()}\\left(${T}-1\\right)^{2}`,
+          .toLatex()}${T}^{2}`,
       },
     ],
     lastQuadraticControlPoint: p1,
