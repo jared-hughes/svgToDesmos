@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Convert SVG path to small Desmos parametric",
   "scripts": {
-    "serve": "ts-node --files src/path2desmos.ts"
+    "serve": "ts-node --files src/svg2desmos.ts"
   },
   "author": "jared-hughes",
   "license": "ISC",
