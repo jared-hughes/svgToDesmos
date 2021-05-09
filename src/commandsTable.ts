@@ -1,13 +1,6 @@
 import type { State } from "./pathToParametric";
 import Point from "./point";
-
-function t(lastT: number) {
-  if (lastT === 0) {
-    return `T`;
-  } else {
-    return `\\left(T-${lastT}\\right)`;
-  }
-}
+import { Polynomial } from "./Polynomial";
 
 function moveTo({ parts }: State, p: Point) {
   return {
@@ -16,6 +9,8 @@ function moveTo({ parts }: State, p: Point) {
   };
 }
 
+const bernstein01 = new Polynomial([1, -1]);
+const bernstein11 = new Polynomial([0, 1]);
 function lineTo({ parts, lastT, currentPoint }: State, p: Point) {
   if (p.eq(currentPoint)) {
     return {
@@ -23,20 +18,22 @@ function lineTo({ parts, lastT, currentPoint }: State, p: Point) {
       currentPoint,
     };
   }
-  const T = t(lastT);
   return {
     parts: [
       ...parts,
       {
         startT: lastT,
-        endT: lastT + 1,
-        value: `${currentPoint.toLatex()}+${p.sub(currentPoint).toLatex()}${T}`,
+        value: bernstein01.mulPoint(currentPoint).add(bernstein11.mulPoint(p)),
       },
     ],
     currentPoint: p,
   };
 }
 
+const bernstein03 = new Polynomial([1, -3, 3, -1]);
+const bernstein13 = new Polynomial([0, 3, -6, 3]);
+const bernstein23 = new Polynomial([0, 0, 3, -3]);
+const bernstein33 = new Polynomial([0, 0, 0, 1]);
 function cubicBezierTo(
   { parts, lastT, currentPoint }: State,
   p1: Point,
@@ -51,22 +48,16 @@ function cubicBezierTo(
       currentPoint,
     };
   }
-  const T = t(lastT);
   return {
     parts: [
       ...parts,
       {
         startT: lastT,
-        endT: lastT + 1,
-        value: `${currentPoint.toLatex()}+${p1
-          .sub(currentPoint)
-          .mul(3)
-          .toLatex()}\\left(1-${T}\\right)^{2}${T}+${p2
-          .sub(currentPoint)
-          .mul(3)
-          .toLatex()}\\left(1-${T}\\right)${T}^{2}+${p
-          .sub(currentPoint)
-          .toLatex()}${T}^{3}`,
+        value: bernstein03
+          .mulPoint(p1)
+          .add(bernstein13.mulPoint(p1))
+          .add(bernstein23.mulPoint(p2))
+          .add(bernstein33.mulPoint(currentPoint)),
       },
     ],
     lastCubicControlPoint: p2,
@@ -85,6 +76,9 @@ function smoothCubicBezierTo(state: State, p2: Point, p: Point) {
   );
 }
 
+const bernstein02 = new Polynomial([1, -2, 1]);
+const bernstein12 = new Polynomial([0, 2, -2]);
+const bernstein22 = new Polynomial([0, 0, 1]);
 function quadraticBezierTo(
   { parts, lastT, currentPoint }: State,
   p1: Point,
@@ -98,19 +92,15 @@ function quadraticBezierTo(
       currentPoint,
     };
   }
-  const T = t(lastT);
   return {
     parts: [
       ...parts,
       {
         startT: lastT,
-        endT: lastT + 1,
-        value: `${currentPoint.toLatex()}+${p1
-          .sub(currentPoint)
-          .mul(2)
-          .toLatex()}\\left(${T}-${T}^2\\right)+${p
-          .sub(currentPoint)
-          .toLatex()}${T}^{2}`,
+        value: bernstein02
+          .mulPoint(currentPoint)
+          .add(bernstein12.mulPoint(p1))
+          .add(bernstein22.mulPoint(p)),
       },
     ],
     lastQuadraticControlPoint: p1,

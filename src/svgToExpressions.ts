@@ -20,11 +20,11 @@ function getPaths(svg: string) {
   return paths;
 }
 
-export function svgToExpressions(svg: string, normalize: boolean) {
+export function svgToExpressions(svg: string) {
   const paths = getPaths(svg);
   const expressions = [];
   for (const path of paths) {
-    expressions.push(...pathToExpressions(path, normalize));
+    expressions.push(...pathToExpressions(path));
   }
   return expressions;
 }

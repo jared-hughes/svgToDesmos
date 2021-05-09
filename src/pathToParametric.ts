@@ -1,6 +1,7 @@
 import Point from "./point";
 import { parsePath } from "./parsePath";
 import commandsTable from "./commandsTable";
+import { Polynomial, PointPolynomial } from "./Polynomial";
 
 /*
 Known to not be handled yet:
@@ -10,13 +11,12 @@ Known to not be handled yet:
 
 interface Part {
   startT: number;
-  endT: number; // endT should = startT + 1
-  value: string;
+  value: PointPolynomial; // map from [0,1) to curve
 }
 
 export interface State {
   parts: Part[];
-  lastT: number; // endT for the last part, or 0
+  lastT: number;
   currentPoint: Point;
   lastCubicControlPoint?: Point;
   lastQuadraticControlPoint?: Point;
@@ -48,7 +48,7 @@ function mergeState(
   state.parts = nextState.parts;
   const lastPart = nextState.parts[nextState.parts.length - 1];
   if (lastPart !== undefined) {
-    state.lastT = lastPart.endT;
+    state.lastT = lastPart.startT + 1;
   }
   // current point gets redefined in each command
   state.currentPoint = nextState.currentPoint;
@@ -58,40 +58,29 @@ function mergeState(
   state.firstPoint = state.firstPoint ?? nextState.currentPoint;
 }
 
-function getParametricExpressions(state: State, normalize: boolean) {
+function getParametric(state: State) {
   const numParts = state.parts.length;
-  let latex = `\\left\\{${state.parts
+  const tScale = numParts;
+  const mainParametric = `${state.parts
     .map(
-      (part, i) =>
-        `${i < numParts - 1 ? `${part.startT}\\le T<${part.endT}:` : ""}${
-          part.value
-        }`
+      (part) =>
+        `${tScale}t \\leq${part.startT + 1}:${part.value
+          .applyTo(new Polynomial([-part.startT, tScale]))
+          .toHornerLatex("t")}`
     )
-    .join(",")}\\right\\}`;
-  if (normalize) {
-    latex = latex.replace(/T/g, `\\left(${numParts}t\\right)`);
-    return [
-      {
-        type: "expression",
-        latex: `p\\left(t\\right)=${latex}`,
-      },
-    ];
-  } else {
-    latex = latex.replace(/T/g, "u");
-    return [
-      {
-        type: "expression",
-        latex: `p_{0}\\left(u\\right)=${latex}`,
-      },
-      {
-        type: "expression",
-        latex: `p\\left(t\\right)=p_{0}\\left(${numParts}t\\right)`,
-      },
-    ];
-  }
+    .join(",")}`;
+  const smallCase = `t<0:${state.firstPoint?.toLatex()}`;
+  // this is the default condition, so no explicit condition needed
+  const largeCase = `${state.currentPoint?.toLatex()}`;
+  return [
+    {
+      type: "expression",
+      latex: `\\left\\{${smallCase},${mainParametric},${largeCase}\\right\\}`,
+    },
+  ];
 }
 
-export function pathToExpressions(path: string, normalize: boolean) {
+export function pathToExpressions(path: string) {
   // path should be the contents of a `d=` attribute
   // see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
   //
@@ -120,5 +109,5 @@ export function pathToExpressions(path: string, normalize: boolean) {
     const nextState = func(state, args);
     mergeState(state, nextState);
   }
-  return getParametricExpressions(state, normalize);
+  return getParametric(state);
 }
