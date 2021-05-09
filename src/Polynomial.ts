@@ -76,7 +76,7 @@ export class Polynomial {
     } else {
       // general recursive case
       const inner = this.toHornerLatex(parameter, startIndex + 1);
-      str = `${parameter}\\left(${inner}\\right)`;
+      str = `${parameter}(${inner})`;
     }
     if (this.coeffs[startIndex] !== 0) {
       str = `${this.coeffs[startIndex]}+` + str;
@@ -120,7 +120,7 @@ export class PointPolynomial {
   toHornerLatex(parameter: string) {
     const xstr = this.xPoly.toHornerLatex(parameter);
     const ystr = this.yPoly.toHornerLatex(parameter);
-    return `\\left(${xstr},${ystr}\\right)`;
+    return `(${xstr},${ystr})`;
   }
 }
 

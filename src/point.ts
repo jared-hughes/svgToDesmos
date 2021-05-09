@@ -13,7 +13,7 @@ export default class Point {
   constructor(public x = 0, public y = 0) {}
 
   toLatex() {
-    return `\\left(${cleanCoord(this.x)},${cleanCoord(this.y)}\\right)`;
+    return `(${cleanCoord(this.x)},${cleanCoord(this.y)})`;
   }
 
   add(p: Point) {
