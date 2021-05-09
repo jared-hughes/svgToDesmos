@@ -58,7 +58,7 @@ function mergeState(
   state.firstPoint = state.firstPoint ?? nextState.currentPoint;
 }
 
-function getParametricLatex(state: State, normalize: boolean) {
+function getParametricExpressions(state: State, normalize: boolean) {
   const numParts = state.parts.length;
   let latex = `\\left\\{${state.parts
     .map(
@@ -70,14 +70,28 @@ function getParametricLatex(state: State, normalize: boolean) {
     .join(",")}\\right\\}`;
   if (normalize) {
     latex = latex.replace(/T/g, `\\left(${numParts}t\\right)`);
-    return `p\\left(t\\right)=${latex}`;
+    return [
+      {
+        type: "expression",
+        latex: `p\\left(t\\right)=${latex}`,
+      },
+    ];
   } else {
     latex = latex.replace(/T/g, "u");
-    return `p_{0}\\left(u\\right)=${latex}\np\\left(t\\right)=p_{0}\\left(${numParts}t\\right)`;
+    return [
+      {
+        type: "expression",
+        latex: `p_{0}\\left(u\\right)=${latex}`,
+      },
+      {
+        type: "expression",
+        latex: `p\\left(t\\right)=p_{0}\\left(${numParts}t\\right)`,
+      },
+    ];
   }
 }
 
-export function pathToParametric(path: string) {
+export function pathToParametric(path: string, normalize: boolean) {
   // path should be the contents of a `d=` attribute
   // see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
   //
@@ -104,5 +118,5 @@ export function pathToParametric(path: string) {
     const nextState = func(state, args);
     mergeState(state, nextState);
   }
-  return getParametricLatex(state, false);
+  return getParametricExpressions(state, normalize);
 }
