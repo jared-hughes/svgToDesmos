@@ -91,7 +91,7 @@ function getParametricExpressions(state: State, normalize: boolean) {
   }
 }
 
-export function pathToParametric(path: string, normalize: boolean) {
+export function pathToExpressions(path: string, normalize: boolean) {
   // path should be the contents of a `d=` attribute
   // see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
   //
@@ -105,7 +105,9 @@ export function pathToParametric(path: string, normalize: boolean) {
   };
   for (const { command, args } of commands) {
     const entry = commandsTable[command.toUpperCase()];
-    if (entry === undefined) return;
+    if (entry === undefined) {
+      throw new Error(`Command ${command} unknown in parsing of ${path}.`);
+    }
     const { args: argsSpec, func } = entry;
     if (args.length !== argsSpec.length) {
       throw new Error(

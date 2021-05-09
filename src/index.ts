@@ -1,8 +1,11 @@
-import { pathToParametric } from "./pathToParametric";
+import { svgToExpressions } from "./svgToExpressions";
 
-function insertPathAsParametrics(path: string, normalize: boolean) {
-  const exprs = pathToParametric(path, normalize);
+function insertSVGAsExpressions(svg: string, normalize: boolean) {
+  console.log("Processing SVG ...");
+  const exprs = svgToExpressions(svg, normalize);
+  console.log("Applying Expressions ...");
   (window as any).Calc.setExpressions(exprs);
+  console.log("Done with inserting SVG");
 }
 
-(window as any).insertPathAsParametrics = insertPathAsParametrics;
+(window as any).insertSVGAsExpressions = insertSVGAsExpressions;

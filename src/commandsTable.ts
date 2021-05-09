@@ -1,4 +1,4 @@
-import type { State } from "./svg2desmos";
+import type { State } from "./pathToParametric";
 import Point from "./point";
 
 function t(lastT: number) {
