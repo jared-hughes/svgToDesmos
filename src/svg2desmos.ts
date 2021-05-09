@@ -77,7 +77,7 @@ function getParametricLatex(state: State, normalize: boolean) {
   }
 }
 
-function pathToDesmos(path: string) {
+export function pathToParametric(path: string) {
   // path should be the contents of a `d=` attribute
   // see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
   //
@@ -106,9 +106,3 @@ function pathToDesmos(path: string) {
   }
   return getParametricLatex(state, false);
 }
-
-console.log(
-  pathToDesmos(
-    `M1421 582q0 -41 -37 -41h-1175q-39 0 -39 41t39 41h1175q37 0 37 -41z`
-  ) + ";"
-);

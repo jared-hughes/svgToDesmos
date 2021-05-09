@@ -1,14 +1,23 @@
 {
   "name": "path2desmos",
   "version": "0.0.1",
-  "description": "Convert SVG path to small Desmos parametric",
+  "description": "Convert SVG path to Desmos parametric",
   "scripts": {
-    "serve": "ts-node --files src/svg2desmos.ts"
+    "dev": "webpack --mode development --config config/webpack.config.js",
+    "build": "webpack --mode production --config config/webpack.config.js"
   },
   "author": "jared-hughes",
   "license": "ISC",
   "devDependencies": {
+    "ts-loader": "^9.1.2",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.4"
+    "typescript": "^4.2.4",
+    "userscript-metadata-webpack-plugin": "^0.1.0",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jared-hughes/svg2desmos"
   }
 }
