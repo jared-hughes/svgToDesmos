@@ -1,4 +1,5 @@
 import { pathToParametric } from "./pathToParametric";
+import { Expression, generateId } from "./calcHelpers";
 
 function getLabel(node: Element) {
   const lines = [`<${node.localName}>`];
@@ -35,17 +36,6 @@ function getPaths(svg: string) {
     nodeStack.push(...currentNode.children);
   }
   return paths;
-}
-
-function generateId() {
-  return (window as any).Calc.controller.generateId() as string;
-}
-
-interface Expression {
-  // super loose since this is a small project
-  type: string;
-  id: string;
-  [key: string]: any;
 }
 
 export function svgToExpressions(svg: string) {

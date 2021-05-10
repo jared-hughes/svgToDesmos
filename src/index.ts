@@ -1,17 +1,5 @@
 import { svgToExpressions } from "./svgToExpressions";
-
-function insertSVGAsExpressions(svg: string) {
-  const Calc = (window as any).Calc;
-  console.log("Processing SVG ...");
-  const exprs = svgToExpressions(svg);
-  console.log("Applying Expressions ...");
-  const state = Calc.getState();
-  state.expressions.list.push(...exprs);
-  Calc.setState(state, { allowUndo: true });
-  console.log("Done with inserting SVG");
-}
-
-(window as any).insertSVGAsExpressions = insertSVGAsExpressions;
+import { insertExpressions, generateId } from "./calcHelpers";
 
 function injectElement() {
   const addExpressionContainer = document.querySelector(
@@ -26,9 +14,17 @@ function injectElement() {
     "insertSVG"
   ) as HTMLInputElement;
   insertSVGElement.addEventListener("change", async () => {
-    const svgString = await insertSVGElement.files?.[0]?.text();
-    if (svgString === undefined) return;
-    insertSVGAsExpressions(svgString);
+    const file = insertSVGElement.files?.[0];
+    if (file === undefined) return;
+    const svgString = await file.text();
+    insertExpressions([
+      {
+        type: "text",
+        id: generateId(),
+        text: file.name,
+      },
+      ...svgToExpressions(svgString),
+    ]);
   });
 }
 
