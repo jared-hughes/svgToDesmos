@@ -71,6 +71,7 @@ export function svgToExpressions(svg: string, filename?: string) {
       id: generateId(),
       folderId: folderId,
       latex: parametricLatex,
+      fill: true,
     });
   }
   return expressions;
