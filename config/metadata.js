@@ -9,7 +9,7 @@ module.exports = {
   source: pkg.repository.url,
   match: ["https://www.desmos.com/calculator*"],
   require: [],
-  supportURL: "https://github.com/jared-hughes/svg2desmos/issues",
+  supportURL: "https://github.com/jared-hughes/svgToDesmos/issues",
   grant: ["none"],
   "run-at": "document-idle",
 };

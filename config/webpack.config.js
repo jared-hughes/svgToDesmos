@@ -12,7 +12,7 @@ const baseConfig = (metadata) => ({
     minimize: false,
   },
   entry: {
-    SVG2Desmos: path.resolve(__dirname, "../src/index.ts"),
+    svgToDesmos: path.resolve(__dirname, "../src/index.ts"),
   },
   output: {
     filename: "[name].user.js",
@@ -38,7 +38,7 @@ const baseConfig = (metadata) => ({
 module.exports = (env, argv) => {
   if (argv.mode === "development") {
     metadata.require.push(
-      "file://" + path.resolve(__dirname, "../dist/SVG2Desmos.user.js")
+      "file://" + path.resolve(__dirname, "../dist/svgToDesmos.user.js")
     );
     metadata.name += "-dev";
   }
@@ -48,7 +48,7 @@ module.exports = (env, argv) => {
     config.watchOptions = {
       ignored: /node_modules/,
     };
-    config.entry["SVG2Desmos-dev"] = path.resolve(__dirname, "./empty.js");
+    config.entry["svgToDesmos-dev"] = path.resolve(__dirname, "./empty.js");
   }
   return config;
 };
