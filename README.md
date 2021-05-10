@@ -4,7 +4,14 @@ Yes, other SVG to Desmos scripts exist, but this one is special because it:
 
 - operates directly in the browser
 - is optimized for short and fast parametrics using polynomial arithmetic
-- is designed with SVG font files in mind (though it should work for many SVG files, see the Limitations section)
+- **is designed with SVG font files in mind** (though it should work for many SVG files; see the Limitations section below)
+
+## A few example graphs
+
+- [Type Symbola Regular](https://www.desmos.com/calculator/hziliwoljn)
+- [CMU Serif Upright Italic](https://www.desmos.com/calculator/fv29j8rirp) (font library)
+- [CMU Serif Italic](https://www.desmos.com/calculator/h5bbvbpd9c) (font library)
+- [Symbola Regular](https://www.desmos.com/calculator/bmz2bbrlkl) (font library)
 
 ## Why not use Desmos labels for fonts?
 
@@ -16,7 +23,7 @@ Also, labels' size are relative to the graph viewport size in pixels, not math s
 
 Skip the first two steps if you are not working from a font file.
 
-1. Download a font as a TTF file
+1. Download a font as a TTF file (there's many websites for this, or you can google something like "Symbola Font TTF")
 2. Convert the font to an SVG file using [Convertio](https://convertio.co/ttf-svg/) (I have not tested other services, but Convertio uses FontForge, which seems to be a fairly standard program)
 3. After installing the TamperMonkey browser extension, install this userscript by opening [the latest release](https://github.com/jared-hughes/svgToDesmos/releases/latest/download/svgToDesmos.user.js) then clicking <kbd>Install</kbd>.
 
