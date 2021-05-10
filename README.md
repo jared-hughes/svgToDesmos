@@ -31,6 +31,9 @@ Skip the first two steps if you are not working from a font file.
    - There may be a bit of a delay with no visual indication. Just wait for it.
 7. The parametrics should now be inserted, each one to its own folder and hidden by default. You probably want to look through and see which ones to un-hide.
    - Tip for SVG fonts: press Ctrl+F to search through the folders for the character names you want
+   - The points likely do not fit inside the viewport. Zoom out or multiply lengths by `1/2048` (or whatever `units-per-em` the `<font-face>` specifies) to get them in terms of `em`
+   - If you're using these as a font, the attribute `horiz-adv-x` tells the amount by which to increase the `x` value for the next character. You can do this, for example, with `(652, 0) + p(t)` for `horiz-adv-x=652` and parametric `p(t)`
+     - The `horiz-adv-x` defaults to the value given in `<font-face>`
 8. When using the parametrics, keep in mind:
    - The parametrics are designed to take values of `t` from 0 to 1 and return points
    - Values of `t` less than 0 will return the first point, while values of `t` greater than 1 will return the last point of the parametric
