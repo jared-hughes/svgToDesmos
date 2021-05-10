@@ -39,7 +39,7 @@ function getData(svg: string, filename?: string) {
     }
     // nodes always have a children property,
     // so (for leaves) it is an empty HTMLCollection
-    nodeStack.push(...currentNode.children);
+    nodeStack.unshift(...[...currentNode.children].reverse());
   }
   return {
     paths,
