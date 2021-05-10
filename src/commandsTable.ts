@@ -6,6 +6,7 @@ function moveTo({ parts }: State, p: Point) {
   return {
     parts,
     currentPoint: p,
+    initialPoint: p,
   };
 }
 
@@ -123,6 +124,7 @@ type StateOptional = {
   currentPoint: Point;
   lastCubicControlPoint?: Point;
   lastQuadraticControlPoint?: Point;
+  initialPoint?: Point;
 };
 
 interface CommandsTableEntry {
@@ -178,7 +180,7 @@ const commandsTable: { [key: string]: CommandsTableEntry } = {
   Z: {
     args: [],
     // assumes firstPoint is defined (who would start a path with Z?)
-    func: (state) => lineTo(state, state.firstPoint ?? new Point(0, 0)),
+    func: (state) => lineTo(state, state.initialPoint ?? new Point(0, 0)),
   },
 };
 

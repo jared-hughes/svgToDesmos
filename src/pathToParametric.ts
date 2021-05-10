@@ -20,7 +20,7 @@ export interface State {
   currentPoint: Point;
   lastCubicControlPoint?: Point;
   lastQuadraticControlPoint?: Point;
-  firstPoint?: Point;
+  initialPoint?: Point;
 }
 
 function applyRelative(
@@ -55,7 +55,7 @@ function mergeState(
   // `last control points` get reset after each command
   state.lastCubicControlPoint = nextState?.lastCubicControlPoint;
   state.lastQuadraticControlPoint = nextState.lastQuadraticControlPoint;
-  state.firstPoint = state.firstPoint ?? nextState.currentPoint;
+  state.initialPoint = nextState.initialPoint ?? state.initialPoint;
 }
 
 function getParametricLatex(state: State) {
@@ -69,7 +69,7 @@ function getParametricLatex(state: State) {
           .toHornerLatex("t")}`
     )
     .join(",")}`;
-  const smallCase = `t<0:${state.firstPoint?.toLatex()}`;
+  const smallCase = `t<0:${state.initialPoint?.toLatex()}`;
   // this is the default condition, so no explicit condition needed
   const largeCase = `${state.currentPoint?.toLatex()}`;
   return `\\left\\{${smallCase},${mainParametric},${largeCase}\\right\\}`;
@@ -80,7 +80,7 @@ export function pathToParametric(path: string) {
   // see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
   //
   // need to initialize currentPoint to (0,0) and others
-  // need to handle lastT and firstPoint
+  // need to handle lastT and initialPoint
   const commands = parsePath(path);
   const state: State = {
     parts: [],
