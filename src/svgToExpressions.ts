@@ -12,13 +12,14 @@ function getLabel(node: Element) {
   return lines.join("\n");
 }
 
-function getPaths(svg: string) {
+function getData(svg: string, filename?: string) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(svg, "image/svg+xml");
   const paths: {
     path: string;
     label: string;
   }[] = [];
+  let titleInfo = filename ?? "";
   const nodeStack = [...doc.children];
   while (nodeStack.length > 0) {
     const currentNode = nodeStack.pop();
@@ -31,16 +32,30 @@ function getPaths(svg: string) {
         label: getLabel(currentNode),
       });
     }
+    // add identifying information to the title
+    if (["font", "font-face"].includes(currentNode.localName)) {
+      if (titleInfo !== "") titleInfo += "\n\n";
+      titleInfo += getLabel(currentNode);
+    }
     // nodes always have a children property,
     // so (for leaves) it is an empty HTMLCollection
     nodeStack.push(...currentNode.children);
   }
-  return paths;
+  return {
+    paths,
+    titleInfo,
+  };
 }
 
-export function svgToExpressions(svg: string) {
-  const paths = getPaths(svg);
-  const expressions: Expression[] = [];
+export function svgToExpressions(svg: string, filename?: string) {
+  const { paths, titleInfo } = getData(svg, filename);
+  const expressions: Expression[] = [
+    {
+      type: "text",
+      id: generateId(),
+      text: titleInfo,
+    },
+  ];
   for (const path of paths) {
     const parametricLatex = pathToParametric(path.path);
     const folderId = generateId();

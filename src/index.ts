@@ -1,5 +1,5 @@
 import { svgToExpressions } from "./svgToExpressions";
-import { insertExpressions, generateId } from "./calcHelpers";
+import { insertExpressions } from "./calcHelpers";
 
 function injectElement() {
   const addExpressionContainer = document.querySelector(
@@ -17,14 +17,7 @@ function injectElement() {
     const file = insertSVGElement.files?.[0];
     if (file === undefined) return;
     const svgString = await file.text();
-    insertExpressions([
-      {
-        type: "text",
-        id: generateId(),
-        text: file.name,
-      },
-      ...svgToExpressions(svgString),
-    ]);
+    insertExpressions(svgToExpressions(svgString, file.name));
   });
 }
 
