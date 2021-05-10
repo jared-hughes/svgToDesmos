@@ -58,7 +58,7 @@ function mergeState(
   state.firstPoint = state.firstPoint ?? nextState.currentPoint;
 }
 
-function getParametric(state: State) {
+function getParametricLatex(state: State) {
   const numParts = state.parts.length;
   const tScale = numParts;
   const mainParametric = `${state.parts
@@ -72,15 +72,10 @@ function getParametric(state: State) {
   const smallCase = `t<0:${state.firstPoint?.toLatex()}`;
   // this is the default condition, so no explicit condition needed
   const largeCase = `${state.currentPoint?.toLatex()}`;
-  return [
-    {
-      type: "expression",
-      latex: `\\left\\{${smallCase},${mainParametric},${largeCase}\\right\\}`,
-    },
-  ];
+  return `\\left\\{${smallCase},${mainParametric},${largeCase}\\right\\}`;
 }
 
-export function pathToExpressions(path: string) {
+export function pathToParametric(path: string) {
   // path should be the contents of a `d=` attribute
   // see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
   //
@@ -109,5 +104,5 @@ export function pathToExpressions(path: string) {
     const nextState = func(state, args);
     mergeState(state, nextState);
   }
-  return getParametric(state);
+  return getParametricLatex(state);
 }

@@ -1,10 +1,13 @@
 import { svgToExpressions } from "./svgToExpressions";
 
 function insertSVGAsExpressions(svg: string) {
+  const Calc = (window as any).Calc;
   console.log("Processing SVG ...");
   const exprs = svgToExpressions(svg);
   console.log("Applying Expressions ...");
-  (window as any).Calc.setExpressions(exprs);
+  const state = Calc.getState();
+  state.expressions.list.push(...exprs);
+  Calc.setState(state, { allowUndo: true });
   console.log("Done with inserting SVG");
 }
 
