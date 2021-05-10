@@ -13,6 +13,7 @@ function injectElement() {
   const insertSVGElement = document.getElementById(
     "insertSVG"
   ) as HTMLInputElement;
+  (window as any).svgToDesmosInputElement = insertSVGElement;
   insertSVGElement.addEventListener("change", async () => {
     const file = insertSVGElement.files?.[0];
     if (file === undefined) return;
@@ -21,4 +22,6 @@ function injectElement() {
   });
 }
 
-injectElement();
+if ((window as any).svgToDesmosInputElement === undefined) {
+  injectElement();
+}
