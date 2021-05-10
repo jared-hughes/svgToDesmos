@@ -3,8 +3,8 @@
 Yes, other SVG to Desmos scripts exist, but this one is special because it:
 
 - operates directly in the browser
-- is optimized for short and fast parametrics using polynomial arithmetic
-- **is designed with SVG font files in mind** (though it should work for many SVG files; see the Limitations section below)
+- is optimized to create **short, fast** parametrics using polynomial arithmetic and Horner's method
+- **is designed with SVG font files in mind** (though it should work for most SVG files; see the Limitations section below)
 
 ## A few example graphs
 
@@ -31,10 +31,10 @@ Skip the first two steps if you are not working from a font file.
 
 4. I suggest testing on a blank graph
 5. After reloading Desmos, you should now see a button that says <kbd>Choose File</kbd> under the graph's title
-   - If you do not see it, try widening the side panel.
+   - If you do not see it, try widening the left side panel.
    - Yes, the user interface is bad, but I'll probably improve it when (and if) I add this to [DesModder](https://chrome.google.com/webstore/detail/desmodder-for-desmos/eclmfdfimjhkmjglgdldedokjaemjfjp)
 6. Click the <kbd>Choose File</kbd> button and select your SVG file
-   - Warning: There is no confirmation! Make sure your graph is saved beforehand if you don't want to mess it up with a ton of parametrics.
+   - ⚠️ Warning: There is no confirmation! Make sure your graph is saved beforehand if you don't want to mess it up with a ton of parametrics.
    - There may be a bit of a delay with no visual indication. Just wait for it.
 7. The parametrics should now be inserted, each one to its own folder and hidden by default. You probably want to look through and see which ones to un-hide. (tip: zoom out).
 
@@ -49,14 +49,15 @@ General tips:
 
 For SVG Fonts:
 
-- Press Ctrl+F to search through the folders for the character names you want.
-- The points likely do not fit inside the viewport. Zoom out or multiply lengths by `1/2048` (or whatever `units-per-em` the `<font-face>` specifies) to get them in terms of `em`.
-- If you're using these as a font, the attribute `horiz-adv-x` tells the amount by which to increase the `x` value for the next character. You can do this, for example, with `(652, 0) + p(t)` for `horiz-adv-x=652` and parametric `p(t)`.
+- Press Ctrl+F to search through the folders for the character names you want
+  - If you're searching for a letter, search for `j`, and the right letter is probably nearby.
+- The points likely do not fit inside the viewport. Zoom out or multiply lengths by `1/2048` (or whatever `units-per-em` the `<font-face>` specifies) to get lengths in terms of `em`.
+- If you're using generated parametrics as a font, keep in mind that the attribute `horiz-adv-x` tells the amount by which to increase the `x` value for the next character. You can do this, for example, with `(652, 0) + p(t)` for `horiz-adv-x=652` and parametric `p(t)`.
   - The `horiz-adv-x` defaults to the value given in `<font-face>`.
 
 ## Limitations
 
-The conversion process is not following the full SVG specification (which includes transforms, view boxes, and more). It just looks for elements with a `d` attribute (such as `<path d="M 1 2 L 3 4" />`) and injects those paths as a parametric.
+The conversion process does not follow the full SVG specification (which includes transforms, view boxes, and more). It just looks for elements with a `d` attribute (such as `<glyph d="M 1 2 L 3 4" />`) and injects those paths as a parametric.
 
 I have not tested it on many different SVGs, though it seems to work consistently on SVGs generated from TTF files using Convertio.
 
