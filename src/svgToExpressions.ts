@@ -20,6 +20,8 @@ function getData(svg: string, filename?: string) {
     label: string;
   }[] = [];
   let titleInfo = filename ?? "";
+  titleInfo +=
+    "\n\nConverted to Desmos using https://github.com/jared-hughes/svgToDesmos.";
   const nodeStack = [...doc.children];
   while (nodeStack.length > 0) {
     const currentNode = nodeStack.pop();
