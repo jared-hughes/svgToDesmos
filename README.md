@@ -37,6 +37,9 @@ Skip the first two steps if you are not working from a font file.
    - ⚠️ Warning: There is no confirmation! Make sure your graph is saved beforehand if you don't want to mess it up with a ton of parametrics.
    - There may be a bit of a delay with no visual indication. Just wait for it.
 7. The parametrics should now be inserted, each one to its own folder and hidden by default. You probably want to look through and see which ones to un-hide. (tip: zoom out).
+8. If you want to create a string of several letters, try running https://gist.github.com/jared-hughes/a52b1f0158fcda9acbf4775852a27761
+   - That script collects the desired parametrics, calls them in order, and offsets them by (roughly) the correct values.
+   - It does not take into account kerning and other factors, so the spacing might be off by a little, but in general it looks decent
 
 ## Tips
 
