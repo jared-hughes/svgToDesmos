@@ -1,12 +1,32 @@
 import Point from "./point";
 
+// roundDigits only affects coefficients,
+// so it could only affect the value by at most (10**-roundDigits)*t^k
+// = 10**-roundDigits
+// This should later be customizable by user
+const roundDigits = 2; // round to 2 digits after decimal
+// yes, this isn't perfectly precise because of limited float precision
+const epsilon = 0.1 ** roundDigits;
+
+function serializeFloat(x: number) {
+  // we care about absolute precision, not relative precision
+  const out = x.toFixed(roundDigits);
+  // remove trailing 0s
+  const match = out.match(/^(.*?)[0.]*$/);
+  if (match !== null) {
+    return match[1] as string;
+  } else {
+    return "0";
+  }
+}
+
 export class Polynomial {
   // coefficients are stored as a list e.g. [1,2,5] is 1x^0+2x^2+5x^3
   constructor(public coeffs: number[]) {}
 
   clearLeadingZeros() {
     // mutates coeffs
-    while (this.coeffs[this.coeffs.length - 1] === 0) {
+    while (Math.abs(this.coeffs[this.coeffs.length - 1] ?? 0) < epsilon) {
       this.coeffs.pop();
     }
     return this;
@@ -69,25 +89,26 @@ export class Polynomial {
       return "0";
     } else if (degree === startIndex) {
       // should only be reached within degree 0 polynomials
-      return `${this.coeffs[degree]}`;
+      return serializeFloat(this.coeffs[degree] ?? 0);
     } else if (degree - 1 === startIndex) {
       // general base case, e.g. 4+5x
-      str = `${this.coeffs[degree]}${parameter}`;
+      str = serializeFloat(this.coeffs[degree] ?? 0) + parameter;
     } else {
       // general recursive case
       const inner = this.toHornerLatex(parameter, startIndex + 1);
       str = `(${inner})${parameter}`;
     }
     const coeff = this.coeffs[startIndex] ?? 0;
+    const coeffStr = serializeFloat(coeff);
     if (coeff > 0) {
       if (str.startsWith("-")) {
-        str = coeff + str;
+        str = coeffStr + str;
       } else {
-        str += "+" + coeff;
+        str += "+" + coeffStr;
       }
     } else if (coeff < 0) {
       // "-" added by stringification of number
-      str += coeff;
+      str += coeffStr;
     }
     return str;
   }
