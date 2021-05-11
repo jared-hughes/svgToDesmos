@@ -80,7 +80,11 @@ export class Polynomial {
     }
     const coeff = this.coeffs[startIndex] ?? 0;
     if (coeff > 0) {
-      str += "+" + coeff;
+      if (str.startsWith("-")) {
+        str = coeff + str;
+      } else {
+        str += "+" + coeff;
+      }
     } else if (coeff < 0) {
       // "-" added by stringification of number
       str += coeff;
