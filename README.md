@@ -65,4 +65,3 @@ That being said, this script lacks support for:
 
 - colors
 - arcs (the `A` and `a` commands)
-- implicit repetition (e.g. `L 1 2 3 4` is the same as `L 1 2 L 3 4`)
