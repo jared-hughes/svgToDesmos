@@ -5,7 +5,10 @@ function injectElement() {
   const addExpressionContainer = document.querySelector(
     ".dcg-add-expression-container"
   );
-  if (addExpressionContainer === null) return;
+  if (addExpressionContainer === null) {
+    setTimeout(injectElement, 100);
+    return;
+  }
   addExpressionContainer.insertAdjacentHTML(
     "afterend",
     "<input id='insertSVG' type='file' accept='.svg'/>"
