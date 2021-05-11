@@ -3,12 +3,6 @@ import { parsePath } from "./parsePath";
 import commandsTable from "./commandsTable";
 import { Polynomial, PointPolynomial } from "./Polynomial";
 
-/*
-Known to not be handled yet:
- - command A
- - implicit repetition of the command
-*/
-
 interface Part {
   startT: number;
   value: PointPolynomial; // map from [0,1) to curve

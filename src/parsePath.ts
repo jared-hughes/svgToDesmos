@@ -1,3 +1,5 @@
+import commandsTable from "./commandsTable";
+
 const commandChars = new Set("MLHVCSQTAZmlhvcsqtaz");
 const numberChars = new Set("0123456789.-");
 
@@ -34,6 +36,18 @@ export function parsePath(path: string) {
     }
     currentArguments.push(num);
     currentNum = "";
+    if (
+      currentCommand &&
+      commandsTable[currentCommand.toUpperCase()]?.args.length ===
+        currentArguments.length
+    ) {
+      const _currentCommand = currentCommand;
+      closeCommand();
+      if (currentArguments.length > 0) {
+        // implicit repetition, but not for the z or Z commands
+        currentCommand = _currentCommand;
+      }
+    }
   }
   for (const char of path) {
     if (commandChars.has(char)) {
