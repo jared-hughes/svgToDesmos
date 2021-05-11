@@ -13,7 +13,7 @@ function serializeFloat(x: number) {
   const out = x.toFixed(roundDigits);
   // remove trailing 0s
   const match = out.match(/^(.*?)[0.]*$/);
-  if (match !== null) {
+  if (match !== null && match[1] && match[1] !== "-") {
     return match[1] as string;
   } else {
     return "0";
@@ -106,7 +106,7 @@ export class Polynomial {
       } else {
         str += "+" + coeffStr;
       }
-    } else if (coeff < 0) {
+    } else if (coeffStr.charAt(0) === "-") {
       // "-" added by stringification of number
       str += coeffStr;
     }
