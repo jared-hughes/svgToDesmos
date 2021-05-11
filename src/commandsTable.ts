@@ -55,10 +55,10 @@ function cubicBezierTo(
       {
         startT: lastT,
         value: bernstein03
-          .mulPoint(p1)
+          .mulPoint(currentPoint)
           .add(bernstein13.mulPoint(p1))
           .add(bernstein23.mulPoint(p2))
-          .add(bernstein33.mulPoint(currentPoint)),
+          .add(bernstein33.mulPoint(p)),
       },
     ],
     lastCubicControlPoint: p2,
