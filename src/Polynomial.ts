@@ -76,10 +76,18 @@ export class Polynomial {
     } else {
       // general recursive case
       const inner = this.toHornerLatex(parameter, startIndex + 1);
-      str = `${parameter}(${inner})`;
+      str = `(${inner})${parameter}`;
     }
-    if (this.coeffs[startIndex] !== 0) {
-      str = `${this.coeffs[startIndex]}+` + str;
+    const coeff = this.coeffs[startIndex] ?? 0;
+    if (coeff > 0) {
+      if (str.startsWith("-")) {
+        str = coeff + str;
+      } else {
+        str += "+" + coeff;
+      }
+    } else if (coeff < 0) {
+      // "-" added by stringification of number
+      str += coeff;
     }
     return str;
   }
