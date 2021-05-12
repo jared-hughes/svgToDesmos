@@ -89,9 +89,9 @@ export function pathToParametric(path: string) {
     const { args: argsSpec, func } = entry;
     if (args.length !== argsSpec.length) {
       throw new Error(
-        `Incorrect number of args to command "${command}" in parsing of ${path}.` +
-          `Expected ${argsSpec.length} but got ${args.length}.` +
-          `Implicit repetition is not yet supported.`
+        `Incorrect number of args to command "${command}".\n` +
+          `Expected ${argsSpec.length} but got ${args.length}.\n` +
+          `Looks like ${command} ${args.join(" ")}`
       );
     }
     applyRelative(state.currentPoint, command, args, argsSpec);

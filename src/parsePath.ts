@@ -14,16 +14,19 @@ export function parsePath(path: string) {
   let currentNum = "";
   const commands: CommandWithArgs[] = [];
   function closeCommand() {
-    closeNumber();
     if (currentCommand !== null) {
       commands.push({
         command: currentCommand,
         args: currentArguments,
       });
+      // If a moveto is followed by multiple pairs of coordinates, the subsequent pairs are treated as implicit lineto commands.
+      if (currentCommand === "m") {
+        currentCommand = "l";
+      } else if (currentCommand === "M") {
+        currentCommand = "L";
+      }
     }
-    currentCommand = null;
     currentArguments = [];
-    currentNum = "";
   }
   function closeNumber() {
     if (currentNum === "") {
@@ -41,17 +44,11 @@ export function parsePath(path: string) {
       commandsTable[currentCommand.toUpperCase()]?.args.length ===
         currentArguments.length
     ) {
-      const _currentCommand = currentCommand;
       closeCommand();
-      if (currentArguments.length > 0) {
-        // implicit repetition, but not for the z or Z commands
-        currentCommand = _currentCommand;
-      }
     }
   }
   for (const char of path) {
     if (commandChars.has(char)) {
-      closeCommand();
       currentCommand = char;
     } else if (numberChars.has(char)) {
       currentNum += char;
@@ -60,6 +57,6 @@ export function parsePath(path: string) {
       closeNumber();
     }
   }
-  closeCommand();
+  closeNumber();
   return commands;
 }
