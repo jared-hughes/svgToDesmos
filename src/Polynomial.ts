@@ -26,7 +26,10 @@ export class Polynomial {
 
   clearLeadingZeros() {
     // mutates coeffs
-    while (Math.abs(this.coeffs[this.coeffs.length - 1] ?? 0) < epsilon) {
+    while (
+      this.coeffs[this.coeffs.length - 1] !== undefined &&
+      Math.abs(this.coeffs[this.coeffs.length - 1] ?? 0) < epsilon
+    ) {
       this.coeffs.pop();
     }
     return this;
