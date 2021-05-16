@@ -10,13 +10,20 @@ const epsilon = 0.1 ** roundDigits;
 
 function serializeFloat(x: number) {
   // we care about absolute precision, not relative precision
-  const out = x.toFixed(roundDigits);
-  // remove trailing 0s
-  const match = out.match(/^(.*?)[0.]*$/);
-  if (match !== null && match[1] && match[1] !== "-") {
-    return match[1] as string;
+  const str = x.toFixed(roundDigits);
+  // remove trailing 0s after a decimal point
+  const match = str.match(/^([^e]*)(e.*)?$/);
+  if (match !== null && match[1] !== undefined) {
+    let outStr = match[1];
+    while (/\.$|\..*0$/.test(outStr)) {
+      outStr = outStr.slice(0, -1);
+    }
+    if (match[2] !== undefined && match[2] !== "") {
+      outStr += match[2].replace("e", "*10^{") + "}";
+    }
+    return outStr || "0";
   } else {
-    return "0";
+    return str;
   }
 }
 
