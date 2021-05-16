@@ -58,23 +58,24 @@ export function svgToExpressions(svg: string, filename?: string) {
       text: titleInfo,
     },
   ];
+  const folderId = generateId();
+  expressions.push({
+    type: "folder",
+    id: folderId,
+    title: "Latitude lines",
+    hidden: true,
+    collapsed: true,
+  });
+  let i = 0;
   for (const path of paths) {
     const parametricLatex = pathToParametric(path.path);
-    const folderId = generateId();
-    expressions.push({
-      type: "folder",
-      id: folderId,
-      title: path.label,
-      hidden: true,
-      collapsed: true,
-    });
     expressions.push({
       type: "expression",
       id: generateId(),
       folderId: folderId,
-      latex: parametricLatex,
-      fill: true,
+      latex: `p_{lat${i}}(t)=${parametricLatex}`,
     });
+    i += 1;
   }
   return expressions;
 }
