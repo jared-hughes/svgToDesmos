@@ -49,6 +49,7 @@ export function parsePath(path: string) {
   }
   for (const char of path) {
     if (commandChars.has(char)) {
+      closeNumber();
       currentCommand = char;
     } else if (numberChars.has(char)) {
       currentNum += char;
