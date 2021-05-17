@@ -49,6 +49,7 @@ function getData(svg: string, filename?: string) {
   };
 }
 
+const groupSize = 5;
 export function svgToExpressions(svg: string, filename?: string) {
   const { paths, titleInfo } = getData(svg, filename);
   const expressions: Expression[] = [
@@ -58,22 +59,25 @@ export function svgToExpressions(svg: string, filename?: string) {
       text: titleInfo,
     },
   ];
-  const folderId = generateId();
-  expressions.push({
-    type: "folder",
-    id: folderId,
-    title: "Latitude lines",
-    hidden: true,
-    collapsed: true,
-  });
+  let folderId = "";
   let i = 0;
   for (const path of paths) {
+    if (i % groupSize === 0) {
+      folderId = generateId();
+      expressions.push({
+        type: "folder",
+        id: folderId,
+        title: `Group ${(i / groupSize).toFixed(0)}`,
+        hidden: true,
+        collapsed: true,
+      });
+    }
     const parametricLatex = pathToParametric(path.path);
     expressions.push({
       type: "expression",
       id: generateId(),
       folderId: folderId,
-      latex: `p_{lat${i}}(t)=${parametricLatex}`,
+      latex: `f_{${i}}(t)=${parametricLatex}`,
     });
     i += 1;
   }
