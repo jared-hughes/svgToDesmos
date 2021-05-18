@@ -4,7 +4,7 @@ import Point from "./point";
 // so it could only affect the value by at most (10**-roundDigits)*t^k
 // = 10**-roundDigits
 // This should later be customizable by user
-const roundDigits = 4; // round to 2 digits after decimal
+const roundDigits = 6; // round to 6 digits after decimal
 // yes, this isn't perfectly precise because of limited float precision
 const epsilon = 0.1 ** roundDigits;
 
