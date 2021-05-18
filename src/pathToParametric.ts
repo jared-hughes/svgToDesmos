@@ -52,9 +52,8 @@ function mergeState(
   state.initialPoint = nextState.initialPoint ?? state.initialPoint;
 }
 
+const tScale = 5;
 function getParametricLatex(state: State) {
-  const numParts = state.parts.length;
-  const tScale = numParts;
   const mainParametric = `${state.parts
     .map(
       (part) =>
