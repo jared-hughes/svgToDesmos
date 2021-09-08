@@ -9,9 +9,15 @@ Yes, other SVG to Desmos scripts exist, but this one is special because it:
 ## A few example graphs
 
 - [Type Symbola Regular](https://www.desmos.com/calculator/hziliwoljn)
-- [CMU Serif Upright Italic](https://www.desmos.com/calculator/fv29j8rirp) (font library)
-- [CMU Serif Italic](https://www.desmos.com/calculator/h5bbvbpd9c) (font library)
-- [Symbola Regular](https://www.desmos.com/calculator/bmz2bbrlkl) (font library)
+- [CMU Serif Upright Italic](https://www.desmos.com/calculator/fv29j8rirp)
+- [CMU Serif Italic](https://www.desmos.com/calculator/h5bbvbpd9c)
+- [Symbola Regular](https://www.desmos.com/calculator/bmz2bbrlkl)
+- [Dancing Script](https://www.desmos.com/calculator/svmk56ma6v)
+- [Helvetica Neue Medium Extended](https://www.desmos.com/calculator/hnhf1dhhsr)
+- [Whitney Medium](https://www.desmos.com/calculator/tpnaabkvik)
+- [Devil Breeze Medium](https://www.desmos.com/calculator/0m5tzaludf)
+
+If you then run [Text extraction](https://gist.github.com/jared-hughes/a52b1f0158fcda9acbf4775852a27761), you can get a string of letters out.
 
 ## Why not use Desmos labels for fonts?
 
