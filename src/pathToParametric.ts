@@ -72,7 +72,10 @@ function getParametricLatex(state: State) {
 export function pathToParametric(path: string) {
   // path should be the contents of a `d=` attribute
   // see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
-  //
+  if (path === "") {
+    // undefined point
+    return "([][1],0)";
+  }
   // need to initialize currentPoint to (0,0) and others
   // need to handle lastT and initialPoint
   const commands = parsePath(path);

@@ -49,7 +49,7 @@ function getData(svg: string, filename?: string) {
   };
 }
 
-export function svgToExpressions(svg: string, filename?: string) {
+export default function svgToExpressions(svg: string, filename?: string) {
   const { paths, titleInfo } = getData(svg, filename);
   const expressions: Expression[] = [
     {

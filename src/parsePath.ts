@@ -48,6 +48,10 @@ export function parsePath(path: string) {
     }
   }
   for (const char of path) {
+    if (char === "-") {
+      // "L123-456" is valid syntax which should be parsed equivalently to "L 123 -456"
+      closeNumber();
+    }
     if (commandChars.has(char)) {
       closeNumber();
       currentCommand = char;
