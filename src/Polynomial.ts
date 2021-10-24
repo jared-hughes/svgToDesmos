@@ -3,8 +3,8 @@ import Point from "./point";
 // roundDigits only affects coefficients,
 // so it could only affect the value by at most (10**-roundDigits)*t^k
 // = 10**-roundDigits
-// This should later be customizable by user
-const roundDigits = 2; // round to 2 digits after decimal
+// TODO: This should later be customizable by user
+const roundDigits = 6; // round to 2 digits after decimal
 // yes, this isn't perfectly precise because of limited float precision
 const epsilon = 0.1 ** roundDigits;
 
