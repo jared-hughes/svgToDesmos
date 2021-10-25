@@ -58,7 +58,7 @@ function getParametricLatex(state: State) {
   const mainParametric = `${state.parts
     .map(
       (part) =>
-        `${tScale}t \\leq${part.startT + 1}:${part.value
+        `t \\leq${part.startT + 1}/${tScale}:${part.value
           .applyTo(new Polynomial([-part.startT, tScale]))
           .toHornerLatex("t")}`
     )
