@@ -1,12 +1,8 @@
 import { CommandWithArgs } from "./parsePath";
+import { pathCommandsToParametric } from "./pathToParametric";
+import { Expression, generateId } from "./calcHelpers";
 
 type Path = CommandWithArgs[];
-
-interface StyledPath {
-  path: Path;
-  fill: unknown;
-  stroke: unknown;
-}
 
 export default class RenderingContext implements CanvasRenderingContext2D {
   /* Implementation-specific properties */
@@ -21,7 +17,7 @@ export default class RenderingContext implements CanvasRenderingContext2D {
   lineWidth: number = 1;
 
   // For now, simply store a list of commands, and use the old rendering from a list of commands
-  paths: StyledPath[] = [];
+  exprs: Expression[] = [];
   currentPath: Path;
 
   /* Implementation-specific methods */
@@ -44,7 +40,7 @@ export default class RenderingContext implements CanvasRenderingContext2D {
     return [
       {
         command: "M",
-        args: [0, 0],
+        args: this.transformPoint(0, 0),
       },
     ];
   }
@@ -59,16 +55,37 @@ export default class RenderingContext implements CanvasRenderingContext2D {
     fillRuleOrPath?: CanvasFillRule | Path2D | undefined,
     fillRuleMaybe?: CanvasFillRule | undefined
   ) {
-    console.log("fill", fillRuleOrPath, fillRuleMaybe);
+    if (fillRuleOrPath !== "nonzero") {
+      // console.warn("Desmos uses nonzero fill rule. Appearance may differ.");
+    }
+    if (typeof this.fillStyle !== "string") {
+      throw new Error("Only string stroke styles are handled");
+    }
+    this.exprs.push({
+      type: "expression",
+      id: generateId(),
+      latex: pathCommandsToParametric(this.currentPath),
+      fill: true,
+      lines: false,
+      color: this.fillStyle,
+      fillOpacity: this.globalAlpha.toString(),
+    });
   }
   stroke(path?: Path2D) {
     if (path !== undefined) {
       throw new Error("A path was passed to stroke. Not handled");
     }
-    this.paths.push({
-      path: this.currentPath,
-      fill: this.fillStyle,
-      stroke: this.strokeStyle,
+    if (typeof this.strokeStyle !== "string") {
+      throw new Error("Only string stroke styles are handled");
+    }
+    this.exprs.push({
+      type: "expression",
+      id: generateId(),
+      latex: pathCommandsToParametric(this.currentPath),
+      fill: false,
+      lines: true,
+      color: this.strokeStyle,
+      lineOpacity: this.globalAlpha.toString(),
     });
   }
   moveTo(x: number, y: number) {
@@ -80,13 +97,13 @@ export default class RenderingContext implements CanvasRenderingContext2D {
   lineTo(x: number, y: number) {
     this.currentPath.push({
       command: "L",
-      args: [x, y],
+      args: this.transformPoint(x, y),
     });
   }
   quadraticCurveTo(cpx: number, cpy: number, x: number, y: number) {
     this.currentPath.push({
       command: "Q",
-      args: [cpx, cpy, x, y],
+      args: [...this.transformPoint(cpx, cpy), ...this.transformPoint(x, y)],
     });
   }
   bezierCurveTo(
@@ -99,7 +116,11 @@ export default class RenderingContext implements CanvasRenderingContext2D {
   ) {
     this.currentPath.push({
       command: "C",
-      args: [cp1x, cp1y, cp2x, cp2y, x, y],
+      args: [
+        ...this.transformPoint(cp1x, cp1y),
+        ...this.transformPoint(cp2x, cp2y),
+        ...this.transformPoint(x, y),
+      ],
     });
   }
   closePath() {

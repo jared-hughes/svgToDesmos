@@ -1,14 +1,13 @@
-import { pathCommandsToParametric } from "./pathToParametric";
-import { Expression, generateId } from "./calcHelpers";
 import Canvg, { RenderingContext2D } from "canvg";
 import RenderingContext from "./RenderingContext";
+import { Expression, generateId } from "./calcHelpers";
 
 function getData(svg: string, filename?: string) {
   const ctx = new RenderingContext();
   const v = Canvg.fromString(ctx as RenderingContext2D, svg);
   v.start();
   return {
-    paths: ctx.paths,
+    exprs: ctx.exprs,
     titleInfo:
       (filename ?? "") +
       "\n\nConverted to Desmos using https://github.com/jared-hughes/svgToDesmos.",
@@ -16,7 +15,7 @@ function getData(svg: string, filename?: string) {
 }
 
 export default function svgToExpressions(svg: string, filename?: string) {
-  const { paths, titleInfo } = getData(svg, filename);
+  const { exprs, titleInfo } = getData(svg, filename);
   const expressions: Expression[] = [
     {
       type: "text",
@@ -24,8 +23,7 @@ export default function svgToExpressions(svg: string, filename?: string) {
       text: titleInfo,
     },
   ];
-  for (const path of paths) {
-    const parametricLatex = pathCommandsToParametric(path.path);
+  for (const expr of exprs) {
     const folderId = generateId();
     expressions.push({
       type: "folder",
@@ -34,13 +32,8 @@ export default function svgToExpressions(svg: string, filename?: string) {
       hidden: false,
       collapsed: true,
     });
-    expressions.push({
-      type: "expression",
-      id: generateId(),
-      folderId: folderId,
-      latex: parametricLatex,
-      fill: true,
-    });
+    expr.folderId = folderId;
+    expressions.push(expr);
   }
   return expressions;
 }
