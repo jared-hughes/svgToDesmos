@@ -45,6 +45,39 @@ export default class RenderingContext implements CanvasRenderingContext2D {
     ];
   }
 
+  rectLatex(x: number, y: number, w: number, h: number) {
+    return `\\operatorname{polygon}\\left(\\left[
+        (${this.transformPoint(x, y).join(",")}),
+        (${this.transformPoint(x + w, y).join(",")}),
+        (${this.transformPoint(x + w, y + h).join(",")}),
+        (${this.transformPoint(x, y + h).join(",")})
+      \\right]\\right)`;
+  }
+
+  baseRect(x: number, y: number, w: number, h: number) {
+    return {
+      type: "expression",
+      id: generateId(),
+      latex: this.rectLatex(x, y, w, h),
+    };
+  }
+
+  assertFillStyleIsString() {
+    if (typeof this.fillStyle !== "string") {
+      throw new Error("Only string fill styles are handled");
+    }
+  }
+
+  assertStrokeStyleIsString() {
+    if (typeof this.strokeStyle !== "string") {
+      throw new Error("Only string stroke styles are handled");
+    }
+  }
+
+  getOpacity() {
+    return this.globalAlpha.toString();
+  }
+
   /* Interface-required methods */
   beginPath() {
     this.currentPath = this.getDefaultPath();
@@ -58,9 +91,7 @@ export default class RenderingContext implements CanvasRenderingContext2D {
     if (fillRuleOrPath !== "nonzero") {
       // console.warn("Desmos uses nonzero fill rule. Appearance may differ.");
     }
-    if (typeof this.fillStyle !== "string") {
-      throw new Error("Only string stroke styles are handled");
-    }
+    this.assertFillStyleIsString();
     this.exprs.push({
       type: "expression",
       id: generateId(),
@@ -68,16 +99,14 @@ export default class RenderingContext implements CanvasRenderingContext2D {
       fill: true,
       lines: false,
       color: this.fillStyle,
-      fillOpacity: this.globalAlpha.toString(),
+      fillOpacity: this.getOpacity(),
     });
   }
   stroke(path?: Path2D) {
     if (path !== undefined) {
       throw new Error("A path was passed to stroke. Not handled");
     }
-    if (typeof this.strokeStyle !== "string") {
-      throw new Error("Only string stroke styles are handled");
-    }
+    this.assertStrokeStyleIsString();
     this.exprs.push({
       type: "expression",
       id: generateId(),
@@ -85,7 +114,7 @@ export default class RenderingContext implements CanvasRenderingContext2D {
       fill: false,
       lines: true,
       color: this.strokeStyle,
-      lineOpacity: this.globalAlpha.toString(),
+      lineOpacity: this.getOpacity(),
     });
   }
   moveTo(x: number, y: number) {
@@ -165,16 +194,45 @@ export default class RenderingContext implements CanvasRenderingContext2D {
     );
   }
   rect(x: number, y: number, w: number, h: number) {
-    console.log("rect", x, y, w, h);
+    this.assertFillStyleIsString();
+    this.exprs.push({
+      ...this.baseRect(x, y, w, h),
+      fill: true,
+      lines: false,
+      color: this.fillStyle,
+      fillOpacity: this.getOpacity(),
+    });
   }
   clearRect(x: number, y: number, w: number, h: number) {
-    console.log("clearRect", x, y, w, h);
+    /* NOTE: The pixel contents of this region *should* be replaced by transparent black pixels.
+    Instead, we cover the pixels with opaque white. For more uniform behavior, disable the grid
+    and avoid drawing this white rectangle.*/
+    this.exprs.push({
+      ...this.baseRect(x, y, w, h),
+      fill: true,
+      lines: false,
+      color: "#FFF",
+      fillOpacity: "1",
+    });
   }
   fillRect(x: number, y: number, w: number, h: number) {
-    console.log("fillRect", x, y, w, h);
+    this.exprs.push({
+      ...this.baseRect(x, y, w, h),
+      fill: true,
+      lines: false,
+      color: "#FFF",
+      fillOpacity: this.getOpacity(),
+    });
   }
   strokeRect(x: number, y: number, w: number, h: number) {
-    console.log("strokeRect", x, y, w, h);
+    this.assertStrokeStyleIsString();
+    this.exprs.push({
+      ...this.baseRect(x, y, w, h),
+      fill: false,
+      lines: true,
+      color: this.strokeStyle,
+      fillOpacity: this.getOpacity(),
+    });
   }
 
   /* Interface-required methods that just pass through to realCtx */
