@@ -136,10 +136,8 @@ function arcCanvas(
   f: number
 ) {
   const TAU = 2 * Math.PI;
-  console.log("se", startAngle, endAngle);
   startAngle = ((startAngle % TAU) + TAU) % TAU;
   endAngle = ((endAngle % TAU) + TAU) % TAU;
-  console.log("se1", startAngle, endAngle);
   if (counterclockwise) {
     // counterclockwise: decreasing angle
     if (endAngle > startAngle) {
@@ -151,7 +149,6 @@ function arcCanvas(
       endAngle += TAU;
     }
   }
-  console.log("se2", startAngle, endAngle);
   const angle = new Polynomial([startAngle, endAngle - startAngle]);
   const r = serializeFloat(radius);
   return {

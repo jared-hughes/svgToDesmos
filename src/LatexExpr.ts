@@ -10,11 +10,6 @@ export default class LatexExpr {
 
   applyTo(poly: Polynomial) {
     let out = new LatexExpr(this.latexTemplate);
-    console.log(
-      this.arg.toLatex("t"),
-      poly.toLatex("t"),
-      this.arg.applyTo(poly).toLatex("t")
-    );
     out.arg = this.arg.applyTo(poly);
     return out;
   }

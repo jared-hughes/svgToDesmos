@@ -62,18 +62,6 @@ export default class RenderingContext implements CanvasRenderingContext2D {
     };
   }
 
-  assertFillStyleIsString() {
-    if (typeof this.fillStyle !== "string") {
-      throw new Error("Only string fill styles are handled");
-    }
-  }
-
-  assertStrokeStyleIsString() {
-    if (typeof this.strokeStyle !== "string") {
-      throw new Error("Only string stroke styles are handled");
-    }
-  }
-
   getOpacity() {
     return this.globalAlpha.toString();
   }
@@ -91,31 +79,31 @@ export default class RenderingContext implements CanvasRenderingContext2D {
     if (fillRuleOrPath !== "nonzero") {
       // console.warn("Desmos uses nonzero fill rule. Appearance may differ.");
     }
-    this.assertFillStyleIsString();
-    this.exprs.push({
-      type: "expression",
-      id: generateId(),
-      latex: pathCommandsToParametric(this.currentPath),
-      fill: true,
-      lines: false,
-      color: this.fillStyle,
-      fillOpacity: this.getOpacity(),
-    });
+    if (styleIsValid(this.fillStyle))
+      this.exprs.push({
+        type: "expression",
+        id: generateId(),
+        latex: pathCommandsToParametric(this.currentPath),
+        fill: true,
+        lines: false,
+        color: this.fillStyle,
+        fillOpacity: this.getOpacity(),
+      });
   }
   stroke(path?: Path2D) {
     if (path !== undefined) {
       throw new Error("A path was passed to stroke. Not handled");
     }
-    this.assertStrokeStyleIsString();
-    this.exprs.push({
-      type: "expression",
-      id: generateId(),
-      latex: pathCommandsToParametric(this.currentPath),
-      fill: false,
-      lines: true,
-      color: this.strokeStyle,
-      lineOpacity: this.getOpacity(),
-    });
+    if (styleIsValid(this.strokeStyle))
+      this.exprs.push({
+        type: "expression",
+        id: generateId(),
+        latex: pathCommandsToParametric(this.currentPath),
+        fill: false,
+        lines: true,
+        color: this.strokeStyle,
+        lineOpacity: this.getOpacity(),
+      });
   }
   moveTo(x: number, y: number) {
     this.currentPath.push({
@@ -187,14 +175,14 @@ export default class RenderingContext implements CanvasRenderingContext2D {
     });
   }
   rect(x: number, y: number, w: number, h: number) {
-    this.assertFillStyleIsString();
-    this.exprs.push({
-      ...this.baseRect(x, y, w, h),
-      fill: true,
-      lines: false,
-      color: this.fillStyle,
-      fillOpacity: this.getOpacity(),
-    });
+    if (styleIsValid(this.fillStyle))
+      this.exprs.push({
+        ...this.baseRect(x, y, w, h),
+        fill: true,
+        lines: false,
+        color: this.fillStyle,
+        fillOpacity: this.getOpacity(),
+      });
   }
   clearRect(x: number, y: number, w: number, h: number) {
     /* NOTE: The pixel contents of this region *should* be replaced by transparent black pixels.
@@ -218,14 +206,14 @@ export default class RenderingContext implements CanvasRenderingContext2D {
     });
   }
   strokeRect(x: number, y: number, w: number, h: number) {
-    this.assertStrokeStyleIsString();
-    this.exprs.push({
-      ...this.baseRect(x, y, w, h),
-      fill: false,
-      lines: true,
-      color: this.strokeStyle,
-      fillOpacity: this.getOpacity(),
-    });
+    if (styleIsValid(this.strokeStyle))
+      this.exprs.push({
+        ...this.baseRect(x, y, w, h),
+        fill: false,
+        lines: true,
+        color: this.strokeStyle,
+        fillOpacity: this.getOpacity(),
+      });
   }
 
   /* Interface-required methods that just pass through to realCtx */
@@ -342,4 +330,10 @@ export default class RenderingContext implements CanvasRenderingContext2D {
   textBaseline!: any;
   drawFocusIfNeeded!: any;
   scrollPathIntoView!: any;
+}
+
+function styleIsValid(style: string | CanvasGradient | CanvasPattern) {
+  // assume that most strings are valid css color syntax
+  // sometimes canvg will pass a string "[object CanvasPattern]" or something like that
+  return typeof style === "string" && !style.startsWith("[object");
 }
