@@ -166,32 +166,25 @@ export default class RenderingContext implements CanvasRenderingContext2D {
     endAngle: number,
     counterclockwise?: boolean | undefined
   ) {
-    console.log("arc", x, y, radius, startAngle, endAngle, counterclockwise);
-  }
-  arcTo(x1: number, y1: number, x2: number, y2: number, r: number) {
-    console.log("arcTo", x1, y1, x2, y2, r);
-  }
-  ellipse(
-    x: number,
-    y: number,
-    radiusX: number,
-    radiusY: number,
-    rotation: number,
-    startAngle: number,
-    endAngle: number,
-    counterclockwise?: boolean | undefined
-  ) {
-    console.log(
-      "ellipse",
-      x,
-      y,
-      radiusX,
-      radiusY,
-      rotation,
-      startAngle,
-      endAngle,
-      counterclockwise
-    );
+    let { a, b, c, d, e, f } = this.realCtx.getTransform();
+    this.currentPath.push({
+      command: "ARCCANVAS",
+      args: [
+        x,
+        y,
+        radius,
+        startAngle,
+        endAngle,
+        // See ArcCanvas definiton in commandsTable for why we need `as any as number`
+        counterclockwise as any as number,
+        a,
+        b,
+        c,
+        d,
+        e,
+        f,
+      ],
+    });
   }
   rect(x: number, y: number, w: number, h: number) {
     this.assertFillStyleIsString();
@@ -310,6 +303,14 @@ export default class RenderingContext implements CanvasRenderingContext2D {
   strokeText() {}
 
   /* Ignore these, at least for now */
+  arcTo() {
+    // Not used in canvg
+    throw new Error("arcTo not implemented");
+  }
+  ellipse() {
+    // Not used in canvg
+    throw new Error("ellipse not implemented");
+  }
   getContextAttributes!: () => CanvasRenderingContext2DSettings;
   globalCompositeOperation!: string;
   commit!: string;
