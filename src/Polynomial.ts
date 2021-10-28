@@ -1,31 +1,5 @@
 import Point from "./point";
-
-// roundDigits only affects coefficients,
-// so it could only affect the value by at most (10**-roundDigits)*t^k
-// = 10**-roundDigits
-// TODO: This should later be customizable by user
-const roundDigits = 6; // round to 2 digits after decimal
-// yes, this isn't perfectly precise because of limited float precision
-const epsilon = 0.1 ** roundDigits;
-
-function serializeFloat(x: number) {
-  // we care about absolute precision, not relative precision
-  const str = x.toFixed(roundDigits);
-  // remove trailing 0s after a decimal point
-  const match = str.match(/^([^e]*)(e.*)?$/);
-  if (match !== null && match[1] !== undefined) {
-    let outStr = match[1];
-    while (/\.$|\..*0$/.test(outStr)) {
-      outStr = outStr.slice(0, -1);
-    }
-    if (match[2] !== undefined && match[2] !== "") {
-      outStr += match[2].replace("e", "*10^{") + "}";
-    }
-    return outStr || "0";
-  } else {
-    return str;
-  }
-}
+import { epsilon, serializeFloat } from "./float";
 
 export class Polynomial {
   // coefficients are stored as a list e.g. [1,2,5] is 1x^0+2x^2+5x^3
@@ -90,7 +64,7 @@ export class Polynomial {
     return out;
   }
 
-  toHornerLatex(parameter: string, startIndex = 0): string {
+  toLatex(parameter: string, startIndex = 0): string {
     this.clearLeadingZeros();
     const degree = this.coeffs.length - 1;
     let str: string = "";
@@ -105,7 +79,7 @@ export class Polynomial {
       str = serializeFloat(this.coeffs[degree] ?? 0) + parameter;
     } else {
       // general recursive case
-      const inner = this.toHornerLatex(parameter, startIndex + 1);
+      const inner = this.toLatex(parameter, startIndex + 1);
       str = `(${inner})${parameter}`;
     }
     const coeff = this.coeffs[startIndex] ?? 0;
@@ -156,9 +130,9 @@ export class PointPolynomial {
     );
   }
 
-  toHornerLatex(parameter: string) {
-    const xstr = this.xPoly.toHornerLatex(parameter);
-    const ystr = this.yPoly.toHornerLatex(parameter);
+  toLatex(parameter: string) {
+    const xstr = this.xPoly.toLatex(parameter);
+    const ystr = this.yPoly.toLatex(parameter);
     return `(${xstr},${ystr})`;
   }
 }

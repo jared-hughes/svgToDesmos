@@ -1,11 +1,12 @@
 import Point from "./point";
-import { parsePath } from "./parsePath";
+import { CommandWithArgs, parsePath } from "./parsePath";
 import commandsTable from "./commandsTable";
 import { Polynomial, PointPolynomial } from "./Polynomial";
+import { PointLatexExpr } from "./LatexExpr";
 
 interface Part {
   startT: number;
-  value: PointPolynomial; // map from [0,1) to curve
+  value: PointPolynomial | PointLatexExpr; // map from [0,1) to curve
 }
 
 export interface State {
@@ -60,7 +61,7 @@ function getParametricLatex(state: State) {
       (part) =>
         `t \\leq${part.startT + 1}/${tScale}:${part.value
           .applyTo(new Polynomial([-part.startT, tScale]))
-          .toHornerLatex("t")}`
+          .toLatex("t")}`
     )
     .join(",")}`;
   const smallCase = `t<0:${state.initialPoint?.toLatex()}`;
@@ -69,16 +70,20 @@ function getParametricLatex(state: State) {
   return `\\left\\{${smallCase},${mainParametric},${largeCase}\\right\\}`;
 }
 
-export function pathToParametric(path: string) {
+export function pathStringToParametric(path: string) {
   // path should be the contents of a `d=` attribute
   // see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
-  if (path === "") {
+  const commands = parsePath(path);
+  return pathCommandsToParametric(commands);
+}
+
+export function pathCommandsToParametric(commands: CommandWithArgs[]) {
+  if (commands.length === 0) {
     // undefined point
     return "([][1],0)";
   }
   // need to initialize currentPoint to (0,0) and others
   // need to handle lastT and initialPoint
-  const commands = parsePath(path);
   const state: State = {
     parts: [],
     lastT: 0,
@@ -87,7 +92,7 @@ export function pathToParametric(path: string) {
   for (const { command, args } of commands) {
     const entry = commandsTable[command.toUpperCase()];
     if (entry === undefined) {
-      throw new Error(`Command ${command} unknown in parsing of ${path}.`);
+      throw new Error(`Command ${command} unknown.`);
     }
     const { args: argsSpec, func } = entry;
     if (args.length !== argsSpec.length) {

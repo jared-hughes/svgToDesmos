@@ -3,7 +3,7 @@ import commandsTable from "./commandsTable";
 const commandChars = new Set("MLHVCSQTAZmlhvcsqtaz");
 const numberChars = new Set("0123456789.-eE");
 
-interface CommandWithArgs {
+export interface CommandWithArgs {
   command: string;
   args: number[];
 }

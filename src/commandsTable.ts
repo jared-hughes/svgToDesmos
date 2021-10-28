@@ -1,3 +1,5 @@
+import { serializeFloat } from "./float";
+import { LatexExpr, PointLatexExpr } from "./LatexExpr";
 import type { State } from "./pathToParametric";
 import Point from "./point";
 import { Polynomial } from "./Polynomial";
@@ -119,6 +121,57 @@ function smoothQuadraticBezierTo(state: State, p: Point) {
   );
 }
 
+function arcCanvas(
+  { parts, lastT, currentPoint }: State,
+  p: Point,
+  radius: number,
+  startAngle: number,
+  endAngle: number,
+  counterclockwise: boolean,
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  e: number,
+  f: number
+) {
+  const TAU = 2 * Math.PI;
+  startAngle = ((startAngle % TAU) + TAU) % TAU;
+  endAngle = ((endAngle % TAU) + TAU) % TAU;
+  if (counterclockwise) {
+    // counterclockwise: decreasing angle
+    if (endAngle > startAngle) {
+      endAngle -= TAU;
+    }
+  } else {
+    // clockwise: increasing angle
+    if (endAngle < startAngle) {
+      endAngle += TAU;
+    }
+  }
+  const angle = new Polynomial([startAngle, endAngle - startAngle]);
+  const r = serializeFloat(radius);
+  return {
+    parts: [
+      ...parts,
+      {
+        startT: lastT,
+        value: new PointLatexExpr(
+          new LatexExpr(
+            `${e}+${a}(${p.x}+${r}\\cos(%%t%%))+${b}(${p.y}+${r}\\sin(%%t%%))`
+          ),
+          new LatexExpr(
+            `${f}+${c}(${p.x}+${r}\\cos(%%t%%))+${d}(${p.y}+${r}\\sin(%%t%%))`
+          )
+        ).applyTo(angle),
+      },
+    ],
+    currentPoint: p.add(
+      new Point(Math.cos(startAngle), Math.cos(endAngle)).mul(radius)
+    ),
+  };
+}
+
 type StateOptional = {
   parts: State["parts"];
   currentPoint: Point;
@@ -177,6 +230,38 @@ const commandsTable: { [key: string]: CommandsTableEntry } = {
     func: (state, [x, y]) => smoothQuadraticBezierTo(state, new Point(x, y)),
   },
   // A: Not Implemented,
+  ARCCANVAS: {
+    /* This is not the SVG A command. Kinda hacky grouping it with commands
+    (radius etc are not positions, counterclockwise is not number, etc), but this should be fine.
+    
+    arc(
+      x: number,
+      y: number,
+      radius: number,
+      startAngle: number,
+      endAngle: number,
+      counterclockwise?: boolean | undefined
+    )*/
+    args: [X, Y, X, Y, X, Y, X, Y, X, Y, X, Y],
+    func: (
+      state,
+      [x, y, radius, startAngle, endAngle, counterclockwise, a, b, c, d, e, f]
+    ) =>
+      arcCanvas(
+        state,
+        new Point(x, y),
+        radius ?? 0,
+        startAngle ?? 0,
+        endAngle ?? 0,
+        (counterclockwise ?? false) as any as boolean,
+        a ?? 0,
+        b ?? 0,
+        c ?? 0,
+        d ?? 0,
+        e ?? 0,
+        f ?? 0
+      ),
+  },
   Z: {
     args: [],
     // assumes firstPoint is defined (who would start a path with Z?)

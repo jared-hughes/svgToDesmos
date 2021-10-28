@@ -1,4 +1,4 @@
-import { pathToParametric } from "./pathToParametric";
+import { pathStringToParametric } from "./pathToParametric";
 import { Expression, generateId } from "./calcHelpers";
 import { parse as parseFont } from "opentype.js";
 import Point from "./point";
@@ -23,7 +23,7 @@ export default function fontToExpressions(
     if (parametricBodies[key] === undefined) {
       // Performance owuld be improved by directly using path.commands
       // but it's easier to just use the existing path parser
-      const parametricBody = pathToParametric(path.toPathData(15));
+      const parametricBody = pathStringToParametric(path.toPathData(15));
       parametricBodies[key] = parametricBody;
     }
     parametricCalls.push(key);
