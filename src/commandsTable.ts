@@ -1,5 +1,5 @@
 import { serializeFloat } from "./float";
-import LatexExpr from "./LatexExpr";
+import { LatexExpr, PointLatexExpr } from "./LatexExpr";
 import type { State } from "./pathToParametric";
 import Point from "./point";
 import { Polynomial } from "./Polynomial";
@@ -156,8 +156,13 @@ function arcCanvas(
       ...parts,
       {
         startT: lastT,
-        value: new LatexExpr(
-          `(${e},${f})+(${a}(${p.x}+${r}\\cos(%%t%%))+${b}(${p.y}+${r}\\sin(%%t%%)),${c}(${p.x}+${r}\\cos(%%t%%))+${d}(${p.y}+${r}\\sin(%%t%%)))`
+        value: new PointLatexExpr(
+          new LatexExpr(
+            `${e}+${a}(${p.x}+${r}\\cos(%%t%%))+${b}(${p.y}+${r}\\sin(%%t%%))`
+          ),
+          new LatexExpr(
+            `${f}+${c}(${p.x}+${r}\\cos(%%t%%))+${d}(${p.y}+${r}\\sin(%%t%%))`
+          )
         ).applyTo(angle),
       },
     ],

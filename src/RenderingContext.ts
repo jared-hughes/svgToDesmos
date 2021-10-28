@@ -30,9 +30,10 @@ export default class RenderingContext implements CanvasRenderingContext2D {
     this.currentPath = this.getDefaultPath();
   }
 
-  transformPoint(x: number, y: number) {
+  transformPoint(x: number, y: number): [number, number] {
     const p = new DOMPoint(x, y).matrixTransform(this.getTransform());
-    return [p.x, p.y];
+    // negate to switch screen coords and math coords
+    return [p.x, -p.y];
   }
 
   getDefaultPath() {
@@ -154,7 +155,11 @@ export default class RenderingContext implements CanvasRenderingContext2D {
     endAngle: number,
     counterclockwise?: boolean | undefined
   ) {
-    let { a, b, c, d, e, f } = this.realCtx.getTransform();
+    // Use .transformPoint to avoid directly accessing this.realCtx.getTransform()
+    // Benefit: abstraction to .transformPoint (helps with e.g. negating y value)
+    let [a, c] = this.transformPoint(1, 0);
+    let [b, d] = this.transformPoint(0, 1);
+    let [e, f] = this.transformPoint(0, 0);
     this.currentPath.push({
       command: "ARCCANVAS",
       args: [
@@ -165,10 +170,10 @@ export default class RenderingContext implements CanvasRenderingContext2D {
         endAngle,
         // See ArcCanvas definiton in commandsTable for why we need `as any as number`
         counterclockwise as any as number,
-        a,
-        b,
-        c,
-        d,
+        a - e,
+        b - e,
+        c - f,
+        d - f,
         e,
         f,
       ],

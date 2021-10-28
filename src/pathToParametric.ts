@@ -2,11 +2,11 @@ import Point from "./point";
 import { CommandWithArgs, parsePath } from "./parsePath";
 import commandsTable from "./commandsTable";
 import { Polynomial, PointPolynomial } from "./Polynomial";
-import LatexExpr from "./LatexExpr";
+import { PointLatexExpr } from "./LatexExpr";
 
 interface Part {
   startT: number;
-  value: PointPolynomial | LatexExpr; // map from [0,1) to curve
+  value: PointPolynomial | PointLatexExpr; // map from [0,1) to curve
 }
 
 export interface State {

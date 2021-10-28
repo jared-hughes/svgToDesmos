@@ -1,12 +1,12 @@
 import { Polynomial } from "./Polynomial";
 
-export default class LatexExpr {
+export class LatexExpr {
   /* The template treats "%%t%%" as the parameter */
-  arg: Polynomial;
 
-  constructor(public latexTemplate: string) {
-    this.arg = new Polynomial([0, 1]);
-  }
+  constructor(
+    public latexTemplate: string,
+    public arg: Polynomial = new Polynomial([0, 1])
+  ) {}
 
   applyTo(poly: Polynomial) {
     let out = new LatexExpr(this.latexTemplate);
@@ -19,5 +19,17 @@ export default class LatexExpr {
       /%%t%%/g,
       `(${this.arg.toLatex(parameter)})`
     );
+  }
+}
+
+export class PointLatexExpr {
+  constructor(public x: LatexExpr, public y: LatexExpr) {}
+
+  applyTo(poly: Polynomial) {
+    return new PointLatexExpr(this.x.applyTo(poly), this.y.applyTo(poly));
+  }
+
+  toLatex(parameter: string) {
+    return `(${this.x.toLatex(parameter)},${this.y.toLatex(parameter)})`;
   }
 }
