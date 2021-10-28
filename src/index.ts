@@ -48,7 +48,7 @@ function injectInsertFont(container: HTMLDivElement) {
     if (file === undefined) return;
     const fontBuffer = await file.arrayBuffer();
     const text = textInput.value;
-    insertExpressions(fontToExpressions(fontBuffer, text));
+    insertExpressions(fontToExpressions(fontBuffer, text, file.name));
   });
 }
 

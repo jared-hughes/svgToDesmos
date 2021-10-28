@@ -5,7 +5,8 @@ import Point from "./point";
 
 export default function fontToExpressions(
   fontBuffer: ArrayBuffer,
-  str: string
+  str: string,
+  filename: string
 ) {
   const font = parseFont(fontBuffer);
   const parametricBodies: { [key: number]: string } = {};
@@ -61,7 +62,10 @@ export default function fontToExpressions(
   expressions.push({
     type: "folder",
     id: parametricsFolderID,
-    title: "Parametric glyph definitions",
+    title:
+      "Parametric glyph definitions\n\n" +
+      (filename ?? "") +
+      "\n\nConverted to Desmos using https://github.com/jared-hughes/svgToDesmos.",
     collapsed: true,
   });
   expressions.push(
