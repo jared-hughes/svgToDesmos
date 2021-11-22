@@ -137,6 +137,15 @@ export class PointPolynomial {
   }
 }
 
+export class UndefinedPoint {
+  applyTo() {
+    return this;
+  }
+  toLatex() {
+    return "([][1],0)";
+  }
+}
+
 /* Informal tests real quick */
 
 /*

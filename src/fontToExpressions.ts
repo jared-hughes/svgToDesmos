@@ -22,7 +22,7 @@ export default function fontToExpressions(
     });
     const key = glyph.index;
     if (parametricBodies[key] === undefined) {
-      // Performance owuld be improved by directly using path.commands
+      // Performance could be improved by directly using path.commands
       // but it's easier to just use the existing path parser
       const parametricBody = pathStringToParametric(path.toPathData(15));
       parametricBodies[key] = parametricBody;

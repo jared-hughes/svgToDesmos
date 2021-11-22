@@ -2,11 +2,17 @@ import { serializeFloat } from "./float";
 import { LatexExpr, PointLatexExpr } from "./LatexExpr";
 import type { State } from "./pathToParametric";
 import Point from "./point";
-import { Polynomial } from "./Polynomial";
+import { Polynomial, UndefinedPoint } from "./Polynomial";
 
-function moveTo({ parts }: State, p: Point) {
+function moveTo({ parts, lastT }: State, p: Point) {
   return {
-    parts,
+    parts: [
+      ...parts,
+      {
+        startT: lastT,
+        value: new UndefinedPoint(),
+      },
+    ],
     currentPoint: p,
     initialPoint: p,
   };
