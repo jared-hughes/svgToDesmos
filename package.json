@@ -1,7 +1,7 @@
 {
   "name": "path2desmos",
-  "version": "0.0.1",
-  "description": "Convert SVG path to Desmos parametric",
+  "version": "0.3.0",
+  "description": "Convert SVGs and fonts to Desmos",
   "scripts": {
     "dev": "webpack --mode development --config config/webpack.config.js",
     "build": "webpack --mode production --config config/webpack.config.js"

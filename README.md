@@ -4,14 +4,14 @@ Yes, other SVG to Desmos scripts exist, but this one is special because it:
 
 - operates directly in the browser
 - is optimized to create **short, fast** parametrics using polynomial arithmetic and Horner's method
-- **is designed with SVG font files in mind** (though it should work for most SVG files; see the Limitations section below)
+- handles SVG transforms and more (see the Limitations section below)
+- handles font files (TTF, etc.)
 
-## A few example font graphs
+## A few example graphs
 
+- [Circles Single](https://www.desmos.com/calculator/a889yoavht)
 - [Dancing Script](https://www.desmos.com/calculator/rtpmycwixz)
 - [Lobster Regular](https://www.desmos.com/calculator/29ozjnu3aw)
-- [Devil Breeze](https://www.desmos.com/calculator/sjkcsnakab)
-- [Nunito](https://www.desmos.com/calculator/nmgtmamleb)
 
 ## Why not use Desmos labels for fonts?
 
@@ -52,10 +52,10 @@ General tips:
 
 ## Limitations
 
-The conversion process for SVGs does not follow the full SVG specification (which includes transforms, view boxes, and more). It just looks for elements with a `d` attribute (such as `<glyph d="M 1 2 L 3 4" />`) and injects those paths as a parametric.
+The conversion process for SVGs works by using the [canvg](https://github.com/canvg/canvg) SVG renderer but swapping out a canvas context for a custom rendering canvas. In other words, it meets the full SVG spec, including transforms, colors, and more, with a few exceptions:
 
 That being said, this script lacks support for:
 
-- colors
-- arcs (the `A` and `a` commands)
-- SVG transforms, etc.
+- arcs and ellipses (I haven't gotten around to these)
+- text and images embedded inside of SVGs
+- path clipping (Very difficult to implement in Desmos)
