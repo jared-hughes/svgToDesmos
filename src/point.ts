@@ -35,4 +35,8 @@ export default class Point {
   eq(p: Point) {
     return this.x === p.x && this.y === p.y;
   }
+
+  mag() {
+    return Math.sqrt(this.x * this.x + this.y * this.y);
+  }
 }
