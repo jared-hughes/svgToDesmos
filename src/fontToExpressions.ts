@@ -42,7 +42,11 @@ function fontToExpressionsPolygonJoin(
   Re-use of glyphs between expressions is not yet included.
   Folder wrapping is not yet included.
   */
-  const lines = spec.split(/;\s*/g).map((line) => line.split("="));
+  const lines = spec.split(/;\s*/g).map((line): [string, string] => {
+    const i = line.indexOf("=");
+    if (i === -1) throw "Line missing equals sign";
+    return [line.slice(0, i).trim(), line.slice(i + 1).trim()];
+  });
   const expressions: Expression[] = [];
   expressions.push({
     type: "text",
@@ -52,8 +56,7 @@ function fontToExpressionsPolygonJoin(
       lines.map((line) => line.join("=")).join(";\n"),
   });
   for (const line of lines) {
-    if (line.length !== 2) throw "Line missing equals sign";
-    const [subscript, str] = line as [string, string];
+    const [subscript, str] = line;
     const commands: PathCommand[] = [];
     let xAdvance: number = 0;
     font.forEachGlyph(str + ";", 0, 0, fontSize, {}, (glyph, x, y) => {
