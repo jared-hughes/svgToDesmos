@@ -59,3 +59,12 @@ That being said, this script lacks support for:
 - arcs and ellipses (I haven't gotten around to these)
 - text and images embedded inside of SVGs
 - path clipping (Very difficult to implement in Desmos)
+
+## Development
+
+```
+nvm use 16
+npm run dev
+```
+
+Then load `dist/svgToDesmos-dev.user.js` into Tampermonkey. It will automatically load the latest version of the userscript when you reload the page.
