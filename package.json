@@ -1,6 +1,6 @@
 {
-  "name": "path2desmos",
-  "version": "0.3.0",
+  "name": "svg2desmos",
+  "version": "0.4.0",
   "description": "Convert SVGs and fonts to Desmos",
   "scripts": {
     "dev": "webpack --mode development --config config/webpack.config.js",
