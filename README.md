@@ -41,6 +41,16 @@ After installing the TamperMonkey browser extension, install this userscript by 
 3. Put text in the input box below the button, then click "Extract text."
 4. The text should be inserted. Each individual glyph is its own function in the "Parametric glyph definitions" folder, and these are displayed in the "Render string" folder
 
+## Polygon Usage for font files
+
+In step 3 above the above instructions, write text starting with `polygon;` to enable polygon export mode. This is what I used for [Desmos in Desmos](https://www.desmos.com/calculator/7945071927). Besides creating expressions that use point lists instead of parametrics, this mode also inserts the widths (technically, the horizontal advances) of the letters.
+
+Type `polygon; caret=^;sin=sin;0=0;1=1` into the text field, and you should get the contents of the folder in <https://www.desmos.com/calculator/z4cpvpbivu>. There is a point list `L_caret` representing the glyph `^`, and `W_caret` with the width of the character. There is a point list `L_sin` representing the three glyphs `sin` laid out horizontally, and `L_sin` being the total width of all three.
+
+Each "spec" line is `[name]=[text];`, except the last line which shouldn't have a trailing semicolon. The name needs to be letters and digits since it goes in Desmos subscript. The text could be anything (except no semicolon).
+
+You might want to tweak the tolerance `let n = getMinNTolerance(A, 0.03);` in `pathCommandsToList.ts`. I don't remember what I used in Desmos in Desmos. Maybe 0.015. This affects how many points are inserted around sharp rounded corners.
+
 ## Tips
 
 General tips:
