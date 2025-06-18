@@ -4,7 +4,7 @@ import fontToExpressions from "./fontToExpressions";
 
 function injectElement() {
   let container = document.querySelector(
-    ".dcg-header-desktop .align-center-container"
+    ".dcg-header>.align-center-container"
   ) as HTMLDivElement | null;
   if (container === null) {
     setTimeout(injectElement, 100);
@@ -12,6 +12,7 @@ function injectElement() {
   }
   container.innerHTML = "";
   container.style.display = "flex";
+  container.style.flexDirection = "column";
   injectInsertFont(container);
   injectInsertSVG(container);
 }
@@ -20,7 +21,7 @@ function injectInsertFont(container: HTMLDivElement) {
   const ttfInsertDiv = document.createElement("div");
   container.prepend(ttfInsertDiv);
   ttfInsertDiv.outerHTML = `
-    <div style='display: flex; flex-direction: column; line-height: normal'>
+    <div style='display: flex; align-items: center; line-height: normal'>
       <div style="display: flex">
         <label for='fontFileInput'> Font: </label>
         <input
@@ -56,7 +57,7 @@ function injectInsertSVG(container: HTMLDivElement) {
   const svgInsertDiv = document.createElement("div");
   container.prepend(svgInsertDiv);
   svgInsertDiv.outerHTML = `
-    <div style='display: flex; flex-direction: column; line-height: normal'>
+    <div style='display: flex; align-items: center; line-height: normal'>
       <div style="display: flex">
         <label for='svgFileInput'> SVG: </label>
         <input id='svgFileInput' type='file' accept='.svg'/>
