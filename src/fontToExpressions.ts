@@ -41,6 +41,7 @@ function fontToExpressionsPolygonJoin(
   Re-use of glyphs between expressions is not yet included.
   Folder wrapping is not yet included.
   */
+  spec = spec.replace(/;\s*$/m, "");
   const lines = spec.split(/;\s*/g).map((line): [string, string] => {
     const i = line.indexOf("=");
     if (i === -1) throw "Line missing equals sign";
