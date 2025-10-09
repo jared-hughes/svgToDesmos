@@ -1,6 +1,6 @@
 import { pathStringToParametric } from "./pathToParametric";
 import { Expression, generateId } from "./calcHelpers";
-import { parse as parseFont, Font, PathCommand } from "opentype.js";
+import { parse as parseFont, Font, PathCommand, Glyph } from "opentype.js";
 import Point from "./point";
 import pathCommandsToList from "./pathCommandsToList";
 import { insertExpressions } from "./calcHelpers";
@@ -101,6 +101,17 @@ function fontToExpressionsPolygonJoin(
   return expressions;
 }
 
+function getKey(glyph: Glyph) {
+  if (glyph.name && /^[a-zA-Z0-9]+$/.test(glyph.name)) {
+    if (/^[0-9]+$/.test(glyph.name)) {
+      return "digit" + glyph.name;
+    }
+    return glyph.name;
+  } else {
+    return glyph.index.toString();
+  }
+}
+
 export default function fontToExpressions(
   fontBuffer: ArrayBuffer,
   str: string,
@@ -118,8 +129,8 @@ export default function fontToExpressions(
       filename
     );
   }
-  const parametricBodies: { [key: number]: string } = {};
-  const parametricCalls: number[] = [];
+  const parametricBodies: { [key: string]: string } = {};
+  const parametricCalls: string[] = [];
   const offsets: Point[] = [];
   font.forEachGlyph(str, 0, 0, fontSize, {}, (glyph, x, y) => {
     const path = glyph.getPath(0, 0, fontSize, {
@@ -128,7 +139,7 @@ export default function fontToExpressions(
       // we have to use some internals to get the scale
       yScale: (-1 / ((glyph.path as any).unitsPerEm || 1000)) * fontSize,
     });
-    const key = glyph.index;
+    const key = getKey(glyph);
     if (parametricBodies[key] === undefined) {
       // Performance could be improved by directly using path.commands
       // but it's easier to just use the existing path parser
