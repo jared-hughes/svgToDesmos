@@ -35,12 +35,16 @@ function injectCheckbox(container: HTMLDivElement) {
         <input type="checkbox" id='widths-toggle' />
         Widths
       </label>
+      <label id='polygon-tolerance-label' style="display: none">
+        <input type="number" id='polygon-tolerance' value='0.03' min=0.001 max=1 step=0.01 style="width: 3em"/>
+        Tolerance
+      </label>
     </div>
   `;
   const inputModeCheckbox = document.getElementById(
     "input-mode"
   ) as HTMLInputElement;
-  inputModeCheckbox.addEventListener("change", (ev) => {
+  inputModeCheckbox.addEventListener("change", () => {
     let [on, off] = ["font-insert", "svg-insert"];
     if (inputModeCheckbox.checked) {
       [on, off] = [off, on];
@@ -53,6 +57,13 @@ function injectCheckbox(container: HTMLDivElement) {
     if (onDiv) onDiv.style.display = "flex";
     const offDiv = document.getElementById(off);
     if (offDiv) offDiv.style.display = "none";
+  });
+  const polygonCheckbox = document.getElementById(
+    "polygon-toggle"
+  ) as HTMLInputElement;
+  polygonCheckbox.addEventListener("change", () => {
+    document.getElementById("polygon-tolerance-label")!.style.display =
+      polygonCheckbox.checked ? "" : "none";
   });
 }
 

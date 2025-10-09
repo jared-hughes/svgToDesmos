@@ -44,7 +44,15 @@ function listPointQuadraticFormula(A: Point, B: Point, C: Point) {
   = (1/n^2) * (A*[1...n]^2+B*n*[1...n]+C*n^2) ← currently outputting this
   = (1/n^2) * (A*[1...n]^2+[B*n+C*n^2,2*B*n+C*n^2...B*n^2+C*n^2])
   */
-  let n = getMinNTolerance(A, 0.03);
+  let tol = parseFloat(
+    (document.getElementById("polygon-tolerance") as HTMLInputElement).value ??
+      ""
+  );
+  if (isNaN(tol)) {
+    console.warn("Invalid tolerance, defaulting to 0.03.");
+    tol = 0.03;
+  }
+  let n = getMinNTolerance(A, tol);
   if (n < 1) {
     // n == 0, so A is (0,0), so this is a line segment
     // just push the last point

@@ -49,6 +49,10 @@ The "polygon" option outputs polygons instead of parametric curves. Polygons are
 because Desmos always samples parametrics to get at least 1000 points, even along straight lines. Using a polygon
 allows more careful control, so it can calculate with fewer total points.
 
+In "polygon" mode, the tolerance value affects how many points are created. It roughly gives an upper bound on the
+distance between a sample point and the "true" curve. The default tolerance of 0.03 means that no sample point will
+be more than 0.03pt from the true curve, if you consider the font size as 16pt.
+
 ## Widths option
 
 If you're doing your own font layout, you may want the width (horizontal advances) of each glyph to know how much to
