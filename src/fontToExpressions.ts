@@ -133,17 +133,18 @@ export default function fontToExpressions(
   const parametricBodies: { [key: string]: string } = {};
   const widths: { [key: string]: string } = {};
 
-  let lastX = 0;
-  let lastKey: string | undefined;
+  const list: { glyph: Glyph; x: number; y: number }[] = [];
+
+  font.forEachGlyph(str + ";", 0, 0, fontSize, {}, (glyph, x, y) => {
+    list.push({ glyph, x, y });
+  });
 
   const parametricCalls: string[] = [];
   const offsets: Point[] = [];
-  font.forEachGlyph(str + str[0], 0, 0, fontSize, {}, (glyph, x, y) => {
-    if (lastKey) {
-      widths[lastKey] = cleanCoord(x - lastX);
-    }
-    lastKey = undefined;
-    lastX = x;
+
+  for (let i = 0; i < list.length - 1; i++) {
+    const { glyph, x, y } = list[i]!;
+    const { x: nextX } = list[i + 1]!;
 
     const path = glyph.getPath(0, 0, fontSize, {
       // We want positive y going up
@@ -153,7 +154,7 @@ export default function fontToExpressions(
     });
     const key = getKey(glyph);
     if (parametricBodies[key] === undefined) {
-      lastKey = key;
+      widths[key] = cleanCoord(nextX - x);
       // Performance could be improved by directly using path.commands
       // but it's easier to just use the existing path parser
       if (doPolygon) {
@@ -166,7 +167,8 @@ export default function fontToExpressions(
     }
     parametricCalls.push(key);
     offsets.push(new Point(x, y));
-  });
+  }
+
   const expressions: Expression[] = [];
   const renderFolderID = generateId();
   expressions.push({
