@@ -1,4 +1,4 @@
-import Canvg, { RenderingContext2D } from "canvg";
+import { Canvg, RenderingContext2D } from "canvg";
 import RenderingContext from "./RenderingContext";
 import { Expression, generateId } from "./calcHelpers";
 
