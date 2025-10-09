@@ -6,6 +6,9 @@ function cleanCoord(x: number) {
   if (!next.includes("e") && next.length < prev.length) {
     return next;
   }
+  if (prev.includes("e")) {
+    return prev.replace(/e.*/, (x) => `*10^{${x.slice(1)}}`);
+  }
   return prev;
 }
 
