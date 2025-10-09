@@ -7,7 +7,10 @@ module.exports = {
   description: pkg.description,
   author: pkg.author,
   source: pkg.repository.url,
-  match: ["https://www.desmos.com/calculator*"],
+  match: [
+    "https://www.desmos.com/calculator*",
+    "https://www.desmos.com/geometry*",
+  ],
   require: [],
   supportURL: "https://github.com/jared-hughes/svgToDesmos/issues",
   grant: ["none"],
