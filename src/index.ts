@@ -91,7 +91,7 @@ function injectInsertFont(container: HTMLDivElement) {
         />
       </div>
       <div style="display: flex">
-        <input id='textToExtract' type='text'/>
+        <input id='textToExtract' type='text' placeholder="Text to Extract"/>
         <button id='extractTextButton' style="color: black">
           Extract text
         </button>
@@ -108,7 +108,7 @@ function injectInsertFont(container: HTMLDivElement) {
     const file = fontInput.files?.[0];
     if (file === undefined) return;
     const fontBuffer = await file.arrayBuffer();
-    const text = textInput.value;
+    const text = textInput.value || textInput.placeholder;
     insertExpressions(
       fontToExpressions(fontBuffer, text, file.name, doPolygon(), doWidths())
     );
