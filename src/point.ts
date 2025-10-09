@@ -4,12 +4,16 @@ export function cleanCoord(x: number) {
   // Desmos can't handle scientific, so just give up
   // An improvement could be golfing exponentials
   if (!next.includes("e") && next.length < prev.length) {
-    return next;
+    return trimTrailingZeroes(next);
   }
   if (prev.includes("e")) {
     return prev.replace(/e.*/, (x) => `*10^{${x.slice(1)}}`);
   }
-  return prev;
+  return trimTrailingZeroes(prev);
+}
+
+function trimTrailingZeroes(s: string) {
+  return s.replace(/[1-9]\.?0+$/, (x) => x[0]!);
 }
 
 export default class Point {
