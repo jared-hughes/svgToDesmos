@@ -56,7 +56,18 @@ function fontToExpressionsPolygonJoin(
       lines.map((line) => line.join("=")).join(";\n"),
   });
   for (const line of lines) {
-    const [subscript, str] = line;
+    let [subscript, str] = line;
+    let points = true;
+    let width = true;
+    if (subscript.startsWith("LW_")) {
+      subscript = subscript.slice(3);
+    } else if (subscript.startsWith("L_")) {
+      subscript = subscript.slice(2);
+      width = false;
+    } else if (subscript.startsWith("W_")) {
+      subscript = subscript.slice(2);
+      points = false;
+    }
     const commands: PathCommand[] = [];
     let xAdvance: number = 0;
     font.forEachGlyph(str + ";", 0, 0, fontSize, {}, (glyph, x, y) => {
@@ -73,17 +84,19 @@ function fontToExpressionsPolygonJoin(
         xAdvance = x;
       }
     });
-    expressions.push({
-      type: "expression",
-      id: `L_${subscript}`,
-      points: false,
-      latex: `L_{${subscript}}=${pathCommandsToList(commands)}`,
-    });
-    expressions.push({
-      type: "expression",
-      id: `W_${subscript}`,
-      latex: `W_{${subscript}}=${xAdvance.toFixed(4)}`,
-    });
+    if (points)
+      expressions.push({
+        type: "expression",
+        id: `L_${subscript}`,
+        points: false,
+        latex: `L_{${subscript}}=${pathCommandsToList(commands)}`,
+      });
+    if (width)
+      expressions.push({
+        type: "expression",
+        id: `W_${subscript}`,
+        latex: `W_{${subscript}}=${xAdvance.toFixed(4)}`,
+      });
   }
   return expressions;
 }
