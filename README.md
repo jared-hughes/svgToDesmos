@@ -29,6 +29,8 @@ After installing the TamperMonkey browser extension, install this userscript by 
 
 ## Usage for general SVGs
 
+It's not the default, check the "Font/SVG" toggle first in order to work with an SVG rather than the default of a font.
+
 1. Start from a blank graph to avoid messing up a graph with a ton of a parametrics
 2. Use the <kbd>Choose File</kbd> button labelled with "SVG," and select your SVG file, then click "insert SVG"
 3. The parametrics should now be inserted, each one to its own folder and hidden by default. You probably want to look through and un-hide many. (tip: zoom out).
@@ -41,15 +43,28 @@ After installing the TamperMonkey browser extension, install this userscript by 
 3. Put text in the input box below the button, then click "Extract text."
 4. The text should be inserted. Each individual glyph is its own function in the "Parametric glyph definitions" folder, and these are displayed in the "Render string" folder
 
-## Polygon Usage for font files
+## Polygon option
 
-In step 3 above the above instructions, write text starting with `polygon;` to enable polygon export mode. This is what I used for [Desmos in Desmos](https://www.desmos.com/calculator/7945071927). Besides creating expressions that use point lists instead of parametrics, this mode also inserts the widths (technically, the horizontal advances) of the letters.
+The "polygon" option outputs polygons instead of parametric curves. Polygons are typically faster than parametrics
+because Desmos always samples parametrics to get at least 1000 points, even along straight lines. Using a polygon
+allows more careful control, so it can calculate with fewer total points.
 
-Type `polygon; caret=^;sin=sin;0=0;1=1` into the text field, and you should get the contents of the folder in <https://www.desmos.com/calculator/z4cpvpbivu>. There is a point list `L_caret` representing the glyph `^`, and `W_caret` with the width of the character. There is a point list `L_sin` representing the three glyphs `sin` laid out horizontally, and `L_sin` being the total width of all three.
+## Widths option
 
-Each "spec" line is `[name]=[text];`, except the last line which shouldn't have a trailing semicolon. The name needs to be letters and digits since it goes in Desmos subscript. The text could be anything (except no semicolon).
+If you're doing your own font layout, you may want the width (horizontal advances) of each glyph to know how much to
+offset each character by. Checking the "widths" toggle gives you the widths as variables to work with.
 
-You might want to tweak the tolerance `let n = getMinNTolerance(A, 0.03);` in `pathCommandsToList.ts`. I don't remember what I used in Desmos in Desmos. Maybe 0.015. This affects how many points are inserted around sharp rounded corners.
+## Special spec usage (for fine control over font output)
+
+By default, typing something like `abc` gives you parametrics `f_a(t)`, `f_b(t)`, `f_c(t)`; or lists `L_a`, `L_b`, `L_c` in polygon mode; and widths `W_a`, `W_b`, `W_c` if "widths" is enabled.
+
+If you want more fine control over what is output, use spec mode, which is enabled by writing `polygon;` at the start of the input field. In this mode, the checkboxes are ignored ("polygon" is forced enabled, and "widths" is enabled by default).
+
+In this mode, instead of writing text like `abc` to be written, you write a semicolon-separated list of name-text pairs. For example, you may write `caret=^` which gives you a list `L_{caret} = [...]` of points representing the string `^`, or `sin=sin` which gives you a list `L_{sin} = [...]` of points representing the string `sin`. The name needs to be letters and digits since it goes in a Desmos subscript. The text could be anything (except no semicolon).
+
+As a full example, typing `polygon;caret=^;sin=sin;0=0;1=1` into the text field (and pressing "Extract text", once a font file is chosen) gives the contents of the folder in <https://www.desmos.com/calculator/z4cpvpbivu>. There is a point list `L_caret` representing the glyph `^`, and `W_caret` with the width of the character. There is a point list `L_sin` representing the three glyphs `sin` laid out horizontally, and `L_sin` being the total width of all three.
+
+If you only want the list (and not the width), you can write `L_caret=^;`. If you only want the width (and not the list), you can write `W_caret=^;`. If you want both, write either `LW_caret=^;` or `caret=^;`.
 
 ## Tips
 
@@ -73,7 +88,8 @@ That being said, this script lacks support for:
 ## Development
 
 ```
-nvm use 16
+nvm use 22
+npm install
 npm run dev
 ```
 
