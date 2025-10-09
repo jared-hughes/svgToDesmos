@@ -2,7 +2,7 @@ import Canvg, { RenderingContext2D } from "canvg";
 import RenderingContext from "./RenderingContext";
 import { Expression, generateId } from "./calcHelpers";
 
-function getData(svg: string, filename?: string) {
+function getData(svg: string, filename: string) {
   const ctx = new RenderingContext();
   const v = Canvg.fromString(ctx as any as RenderingContext2D, svg);
   v.start();
@@ -14,7 +14,7 @@ function getData(svg: string, filename?: string) {
   };
 }
 
-export default function svgToExpressions(svg: string, filename?: string) {
+export default function svgToExpressions(svg: string, filename: string) {
   const { exprs, titleInfo } = getData(svg, filename);
   const expressions: Expression[] = [
     {

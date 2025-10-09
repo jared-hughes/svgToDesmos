@@ -1,6 +1,7 @@
 import { CommandWithArgs } from "./parsePath";
 import { pathCommandsToParametric } from "./pathToParametric";
 import { Expression, generateId } from "./calcHelpers";
+import pathCommandsToList from "./pathCommandsToList";
 
 type Path = CommandWithArgs[];
 

@@ -104,7 +104,8 @@ function fontToExpressionsPolygonJoin(
 export default function fontToExpressions(
   fontBuffer: ArrayBuffer,
   str: string,
-  filename: string
+  filename: string,
+  doPolygon: boolean
 ) {
   const font = parseFont(fontBuffer);
   const fontSize = 16;
@@ -131,8 +132,13 @@ export default function fontToExpressions(
     if (parametricBodies[key] === undefined) {
       // Performance could be improved by directly using path.commands
       // but it's easier to just use the existing path parser
-      const parametricBody = pathStringToParametric(path.toPathData(15));
-      parametricBodies[key] = parametricBody;
+      if (doPolygon) {
+        const parametricBody = pathCommandsToList(path.commands);
+        parametricBodies[key] = parametricBody;
+      } else {
+        const parametricBody = pathStringToParametric(path.toPathData(15));
+        parametricBodies[key] = parametricBody;
+      }
     }
     parametricCalls.push(key);
     offsets.push(new Point(x, y));
@@ -148,7 +154,14 @@ export default function fontToExpressions(
     type: "expression",
     id: generateId(),
     folderId: renderFolderID,
-    latex: `P_{offsets}+\\left[
+    latex: doPolygon
+      ? `\\left[${parametricCalls.map(
+          (key, i) =>
+            `\\operatorname{polygon}\\left(P_{offsets}\\left[${
+              i + 1
+            }\\right] + L_{${key}}\\right)`
+        )}\\right]`
+      : `P_{offsets}+\\left[
         ${parametricCalls.map((key) => `f_{${key}}(t)`).join(",")}
       \\right]`,
     fill: true,
@@ -174,13 +187,16 @@ export default function fontToExpressions(
       (filename ?? "") +
       "\n\nConverted to Desmos using https://github.com/jared-hughes/svgToDesmos.",
     collapsed: true,
+    hidden: true,
   });
   expressions.push(
     ...Object.entries(parametricBodies).map(([key, body]) => ({
       type: "expression",
       id: generateId(),
       folderId: parametricsFolderID,
-      latex: `f_{${key}}\\left(t\\right) = ${body}`,
+      latex: doPolygon
+        ? `L_{${key}} = ${body}`
+        : `f_{${key}}\\left(t\\right) = ${body}`,
     }))
   );
   return expressions;
