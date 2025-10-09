@@ -4,8 +4,9 @@ import fontToExpressions from "./fontToExpressions";
 
 function injectElement() {
   let container = document.querySelector(
-    ".dcg-header-desktop .align-center-container"
+    ".align-center-container"
   ) as HTMLDivElement | null;
+
   if (container === null) {
     setTimeout(injectElement, 100);
     return;
