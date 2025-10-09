@@ -13,6 +13,7 @@ export function cleanCoord(x: number) {
 }
 
 function trimTrailingZeroes(s: string) {
+  if (!s.includes(".")) return s;
   return s.replace(/[1-9]\.?0+$/, (x) => x[0]!);
 }
 
