@@ -1,4 +1,4 @@
-function cleanCoord(x: number) {
+export function cleanCoord(x: number) {
   const prev = x.toString();
   const next = x.toPrecision(6);
   // Desmos can't handle scientific, so just give up

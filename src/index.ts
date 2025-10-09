@@ -22,7 +22,7 @@ function injectCheckbox(container: HTMLDivElement) {
   const checkboxDiv = document.createElement("div");
   container.prepend(checkboxDiv);
   checkboxDiv.outerHTML = `
-    <div style='display: flex; flex-direction: column; line-height: normal; margin-right: 1em;'>
+    <div style='display: flex; flex-direction: column; flex-wrap: wrap; line-height: normal; margin-right: 1em;'>
       <label>
         <input type="checkbox" id='input-mode' />
         Font/SVG
@@ -30,6 +30,10 @@ function injectCheckbox(container: HTMLDivElement) {
       <label id='polygon-toggle-label'>
         <input type="checkbox" id='polygon-toggle' />
         Polygon
+      </label>
+      <label id='widths-toggle-label'>
+        <input type="checkbox" id='widths-toggle' />
+        Widths
       </label>
     </div>
   `;
@@ -43,6 +47,8 @@ function injectCheckbox(container: HTMLDivElement) {
     }
     document.getElementById("polygon-toggle-label")!.style.display =
       inputModeCheckbox.checked ? "none" : "block";
+    document.getElementById("widths-toggle-label")!.style.display =
+      inputModeCheckbox.checked ? "none" : "block";
     const onDiv = document.getElementById(on);
     if (onDiv) onDiv.style.display = "flex";
     const offDiv = document.getElementById(off);
@@ -52,6 +58,11 @@ function injectCheckbox(container: HTMLDivElement) {
 
 function doPolygon(): boolean {
   return !!(document.getElementById("polygon-toggle") as HTMLInputElement)
+    ?.checked;
+}
+
+function doWidths(): boolean {
+  return !!(document.getElementById("widths-toggle") as HTMLInputElement)
     ?.checked;
 }
 
@@ -88,7 +99,7 @@ function injectInsertFont(container: HTMLDivElement) {
     const fontBuffer = await file.arrayBuffer();
     const text = textInput.value;
     insertExpressions(
-      fontToExpressions(fontBuffer, text, file.name, doPolygon())
+      fontToExpressions(fontBuffer, text, file.name, doPolygon(), doWidths())
     );
   });
 }

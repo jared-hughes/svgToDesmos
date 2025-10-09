@@ -1,7 +1,7 @@
 import { pathStringToParametric } from "./pathToParametric";
 import { Expression, generateId } from "./calcHelpers";
 import { parse as parseFont, Font, PathCommand, Glyph } from "opentype.js";
-import Point from "./point";
+import Point, { cleanCoord } from "./point";
 import pathCommandsToList from "./pathCommandsToList";
 
 function fontToExpressionsPolygonJoin(
@@ -115,7 +115,8 @@ export default function fontToExpressions(
   fontBuffer: ArrayBuffer,
   str: string,
   filename: string,
-  doPolygon: boolean
+  doPolygon: boolean,
+  doWidths: boolean
 ) {
   const font = parseFont(fontBuffer);
   const fontSize = 16;
@@ -129,9 +130,20 @@ export default function fontToExpressions(
     );
   }
   const parametricBodies: { [key: string]: string } = {};
+  const widths: { [key: string]: string } = {};
+
+  let lastX = 0;
+  let lastKey: string | undefined;
+
   const parametricCalls: string[] = [];
   const offsets: Point[] = [];
-  font.forEachGlyph(str, 0, 0, fontSize, {}, (glyph, x, y) => {
+  font.forEachGlyph(str + str[0], 0, 0, fontSize, {}, (glyph, x, y) => {
+    if (lastKey) {
+      widths[lastKey] = cleanCoord(x - lastX);
+    }
+    lastKey = undefined;
+    lastX = x;
+
     const path = glyph.getPath(0, 0, fontSize, {
       // We want positive y going up
       // Unfortunately, yScale is not multiplied by the normal scale, so
@@ -140,6 +152,7 @@ export default function fontToExpressions(
     });
     const key = getKey(glyph);
     if (parametricBodies[key] === undefined) {
+      lastKey = key;
       // Performance could be improved by directly using path.commands
       // but it's easier to just use the existing path parser
       if (doPolygon) {
@@ -199,15 +212,24 @@ export default function fontToExpressions(
     collapsed: true,
     hidden: true,
   });
-  expressions.push(
-    ...Object.entries(parametricBodies).map(([key, body]) => ({
+  for (const key in parametricBodies) {
+    const body = parametricBodies[key]!;
+    expressions.push({
       type: "expression",
       id: generateId(),
       folderId: parametricsFolderID,
       latex: doPolygon
         ? `L_{${key}} = ${body}`
         : `f_{${key}}\\left(t\\right) = ${body}`,
-    }))
-  );
+    });
+    if (doWidths && widths[key]) {
+      expressions.push({
+        type: "expression",
+        id: generateId(),
+        folderId: parametricsFolderID,
+        latex: `W_{${key}} = ${widths[key]}`,
+      });
+    }
+  }
   return expressions;
 }
