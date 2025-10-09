@@ -4,6 +4,7 @@ import { Expression, generateId } from "./calcHelpers";
 
 type Path = CommandWithArgs[];
 
+// @ts-expect-error
 export default class RenderingContext implements CanvasRenderingContext2D {
   /* Implementation-specific properties */
   // Use a real canvas and context to handle transform internals and placate references to ctx.canvas
@@ -305,7 +306,7 @@ export default class RenderingContext implements CanvasRenderingContext2D {
     throw new Error("ellipse not implemented");
   }
   getContextAttributes!: () => CanvasRenderingContext2DSettings;
-  globalCompositeOperation!: string;
+  globalCompositeOperation!: GlobalCompositeOperation;
   commit!: string;
   drawImage!: any;
   clip!: () => void;

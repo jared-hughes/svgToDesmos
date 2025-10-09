@@ -1,7 +1,9 @@
 const path = require("path");
 const webpack = require("webpack");
 const metadata = require("./metadata");
-const UserScriptMetaDataPlugin = require("userscript-metadata-webpack-plugin");
+const {
+  UserScriptMetaDataPlugin,
+} = require("userscript-metadata-webpack-plugin");
 
 const baseConfig = (metadata) => ({
   resolve: {

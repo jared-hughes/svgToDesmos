@@ -28,8 +28,10 @@ function applyRelative(
   if (isRelative) {
     for (let i = 0; i < argsSpec.length; i++) {
       if (argsSpec[i] === "X") {
+        // @ts-expect-error
         args[i] += currentPoint.x;
       } else if (argsSpec[i] === "Y") {
+        // @ts-expect-error
         args[i] += currentPoint.y;
       }
     }
@@ -38,7 +40,7 @@ function applyRelative(
 
 function mergeState(
   state: State,
-  nextState: ReturnType<typeof commandsTable[string]["func"]>
+  nextState: ReturnType<(typeof commandsTable)[string]["func"]>
 ) {
   state.parts = nextState.parts;
   const lastPart = nextState.parts[nextState.parts.length - 1];

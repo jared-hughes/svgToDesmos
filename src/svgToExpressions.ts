@@ -4,7 +4,7 @@ import { Expression, generateId } from "./calcHelpers";
 
 function getData(svg: string, filename?: string) {
   const ctx = new RenderingContext();
-  const v = Canvg.fromString(ctx as RenderingContext2D, svg);
+  const v = Canvg.fromString(ctx as any as RenderingContext2D, svg);
   v.start();
   return {
     exprs: ctx.exprs,

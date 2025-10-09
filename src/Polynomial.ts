@@ -46,6 +46,7 @@ export class Polynomial {
     ].map(() => 0);
     for (let i = 0; i < this.coeffs.length; i++) {
       for (let j = 0; j < other.coeffs.length; j++) {
+        // @ts-expect-error
         newCoeffs[i + j] += (this.coeffs[i] ?? 0) * (other.coeffs[j] ?? 0);
       }
     }
@@ -58,6 +59,7 @@ export class Polynomial {
     let out = new Polynomial([this.coeffs[this.coeffs.length - 1] ?? 0]);
     for (let i = this.coeffs.length - 2; i >= 0; i--) {
       out = out.mul(other);
+      // @ts-expect-error
       out.coeffs[0] += this.coeffs[i] ?? 0;
     }
     // out.coeffs[0] += this.coeffs[0] ?? 0;
