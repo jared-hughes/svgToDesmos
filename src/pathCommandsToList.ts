@@ -70,10 +70,11 @@ function listPointQuadraticFormula(A: Point, B: Point, C: Point) {
   }
 }
 
-export default function pathCommandsToList(commands: PathCommand[]) {
+export default function pathCommandsToList(commands: PathCommand[]): string {
   let currentPoint = new Point(0, 0);
   let initialPoint = new Point(0, 0);
   const list = [];
+  let onlyPoints = true;
   for (let cmd of commands) {
     let nextPoint = cmd.type === "Z" ? initialPoint : new Point(cmd.x, cmd.y);
     switch (cmd.type) {
@@ -89,6 +90,7 @@ export default function pathCommandsToList(commands: PathCommand[]) {
         }
         break;
       case "Q":
+        onlyPoints = false;
         const controlPoint = new Point(cmd.x1, cmd.y1);
         list.push(
           listPointQuadraticFormula(
@@ -102,6 +104,14 @@ export default function pathCommandsToList(commands: PathCommand[]) {
         throw new Error("Cubic beziers not yet handled");
     }
     currentPoint = nextPoint;
+  }
+  if (list.length === 0) return "\\left[\\right]";
+  if (list.length === 1) {
+    if (onlyPoints) {
+      return `\\left[${list[0]}\\right]`;
+    } else {
+      return list[0]!;
+    }
   }
   return `\\operatorname{join}(${list.join(",")})`;
 }

@@ -3,7 +3,6 @@ import { Expression, generateId } from "./calcHelpers";
 import { parse as parseFont, Font, PathCommand, Glyph } from "opentype.js";
 import Point from "./point";
 import pathCommandsToList from "./pathCommandsToList";
-import { insertExpressions } from "./calcHelpers";
 
 function fontToExpressionsPolygonJoin(
   font: Font,
