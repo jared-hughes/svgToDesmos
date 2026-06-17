@@ -22,7 +22,7 @@ function injectCheckbox(container: HTMLDivElement) {
   const checkboxDiv = document.createElement("div");
   container.prepend(checkboxDiv);
   checkboxDiv.outerHTML = `
-    <div style='display: flex; flex-direction: column; flex-wrap: wrap; line-height: normal; margin-right: 1em;'>
+    <div style='display: flex; flex-direction: column; flex-wrap: wrap; line-height: normal; margin-right: 6em;'>
       <label>
         <input type="checkbox" id='input-mode' />
         Font/SVG
